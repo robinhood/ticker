@@ -1,4 +1,4 @@
-![](assets/ticker_main.png)
+![](https://github.com/robinhood/ticker/blob/master/assets/ticker_main.gif)
 
 What is Ticker?
 ===============
@@ -67,7 +67,7 @@ Performance
 
 We decided to extend from the base `View` class and achieve everything by drawing directly onto the canvas. The primary benefit from this is having full flexibility and control over memory allocations and minimize performance impact by using native draw operations. We pre-allocate and pre-compute as much as possible for each transition so that the only thing we need to do in the draw path is perform the actual drawing operations. During a performance test (see [ticker-sample](https://github.com/robinhood/ticker/tree/master/ticker-sample)), a screen full of animating `TickerView`s does perfectly fine and does not drop any frames.
 
-![](assets/ticker_perf.png)
+![](https://github.com/robinhood/ticker/blob/master/assets/ticker_perf.gif)
 
 
 License
