@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ticker-sample</string>
+    <string name="perf_test">Perf test</string>
+</resources>
