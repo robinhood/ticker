@@ -142,7 +142,7 @@ public class TickerView extends View {
      * the start and end characters.
      *
      * <p>For example, given the list [a,b,c,d,e], if the view wants to animate from 'd' to 'a',
-     * it will know that it has to go from 'd' -> 'c' -> 'b' -> 'a', and these are the characters
+     * it will know that it has to go from 'd' to 'c' to 'b' to 'a', and these are the characters
      * that show up during the animation scroll.
      *
      * <p>You can find some helpful character list generators in {@link TickerUtils}.
@@ -185,7 +185,7 @@ public class TickerView extends View {
      * animate to the provided text or not.
      *
      * @param text the text to display.
-     * @param animate whether to animate to {@param text}.
+     * @param animate whether to animate to text.
      */
     public synchronized void setText(String text, boolean animate) {
         final char[] targetText = text == null ? new char[0] : text.toCharArray();
