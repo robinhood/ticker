@@ -1,18 +1,18 @@
 package com.robinhood.ticker;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.text.TextPaint;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyChar;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,20 +31,20 @@ public class TickerColumnTest {
         }
     }
 
+    @Mock TickerDrawMetrics metrics;
+    @Mock Canvas canvas;
+    @Mock TextPaint paint;
+
     private TickerColumn tickerColumn;
-    private Canvas canvas;
-    private Paint paint;
 
     @Before
     public void setup() {
-        final TickerDrawMetrics metrics = mock(TickerDrawMetrics.class);
+        MockitoAnnotations.initMocks(this);
+
         when(metrics.getCharHeight()).thenReturn(CHAR_HEIGHT);
         when(metrics.getCharWidth(anyChar())).thenReturn(DEFAULT_CHAR_WIDTH);
         when(metrics.getCharWidth(TickerUtils.EMPTY_CHAR)).thenReturn(0f);
-
         tickerColumn = new TickerColumn(charList, charMap, metrics);
-        canvas = mock(Canvas.class);
-        paint = mock(TextPaint.class);
     }
 
     @Test
