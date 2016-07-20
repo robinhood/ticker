@@ -67,7 +67,7 @@ public class TickerView extends View {
     private final TickerColumnManager columnManager = new TickerColumnManager(metrics);
 
     // Minor optimizations for re-positioning the canvas for the composer.
-    private final Rect canvasFrame = new Rect();
+    private final Rect viewBounds = new Rect();
 
     private ValueAnimator animator;
 
@@ -257,7 +257,7 @@ public class TickerView extends View {
         if (this.textSize != textSize) {
             this.textSize = textSize;
             textPaint.setTextSize(textSize);
-            onTextPaintChanged();
+            onTextPaintMeasurementChanged();
         }
     }
 
@@ -275,7 +275,7 @@ public class TickerView extends View {
      */
     public void setTypeface(Typeface typeface) {
         textPaint.setTypeface(typeface);
-        onTextPaintChanged();
+        onTextPaintMeasurementChanged();
     }
 
     /**
@@ -358,7 +358,7 @@ public class TickerView extends View {
     /**
      * Re-initialize all of our variables that are dependent on the TextPaint measurements.
      */
-    private void onTextPaintChanged() {
+    private void onTextPaintMeasurementChanged() {
         metrics.invalidate();
         checkForRelayout();
         invalidate();
@@ -399,7 +399,7 @@ public class TickerView extends View {
     @Override
     protected void onSizeChanged(int width, int height, int oldw, int oldh) {
         super.onSizeChanged(width, height, oldw, oldh);
-        canvasFrame.set(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(),
+        viewBounds.set(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(),
                 height - getPaddingBottom());
     }
 
@@ -422,34 +422,34 @@ public class TickerView extends View {
     private void realignAndClipCanvasForGravity(Canvas canvas) {
         final float currentWidth = columnManager.getCurrentWidth();
         final float currentHeight = metrics.getCharHeight();
-        realignAndClipCanvasForGravity(canvas, gravity, canvasFrame, currentWidth, currentHeight);
+        realignAndClipCanvasForGravity(canvas, gravity, viewBounds, currentWidth, currentHeight);
     }
 
     // VisibleForTesting
-    static void realignAndClipCanvasForGravity(Canvas canvas, int gravity, Rect canvasFrame,
+    static void realignAndClipCanvasForGravity(Canvas canvas, int gravity, Rect viewBounds,
             float currentWidth, float currentHeight) {
-        final int availableWidth = canvasFrame.width();
-        final int availableHeight = canvasFrame.height();
+        final int availableWidth = viewBounds.width();
+        final int availableHeight = viewBounds.height();
 
         float translationX = 0;
         float translationY = 0;
         if ((gravity & Gravity.CENTER_VERTICAL) == Gravity.CENTER_VERTICAL) {
-            translationY = canvasFrame.top + (availableHeight - currentHeight) / 2f;
+            translationY = viewBounds.top + (availableHeight - currentHeight) / 2f;
         }
         if ((gravity & Gravity.CENTER_HORIZONTAL) == Gravity.CENTER_HORIZONTAL) {
-            translationX = canvasFrame.left + (availableWidth - currentWidth) / 2f;
+            translationX = viewBounds.left + (availableWidth - currentWidth) / 2f;
         }
         if ((gravity & Gravity.TOP) == Gravity.TOP) {
             translationY = 0;
         }
         if ((gravity & Gravity.BOTTOM) == Gravity.BOTTOM) {
-            translationY = canvasFrame.top + (availableHeight - currentHeight);
+            translationY = viewBounds.top + (availableHeight - currentHeight);
         }
         if ((gravity & Gravity.START) == Gravity.START) {
             translationX = 0;
         }
         if ((gravity & Gravity.END) == Gravity.END) {
-            translationX = canvasFrame.left + (availableWidth - currentWidth);
+            translationX = viewBounds.left + (availableWidth - currentWidth);
         }
 
         canvas.translate(translationX ,translationY);

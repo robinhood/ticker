@@ -15,17 +15,17 @@ import static org.mockito.Mockito.when;
 
 public class TickerViewTest {
     @Mock Canvas canvas;
-    @Mock Rect rect;
+    @Mock Rect viewBounds;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
         // 100 x 100 square for available width and height
-        rect.right = 100;
-        rect.bottom = 100;
-        when(rect.width()).thenReturn(rect.right - rect.left);
-        when(rect.height()).thenReturn(rect.bottom - rect.top);
+        viewBounds.right = 100;
+        viewBounds.bottom = 100;
+        when(viewBounds.width()).thenReturn(viewBounds.right - viewBounds.left);
+        when(viewBounds.height()).thenReturn(viewBounds.bottom - viewBounds.top);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class TickerViewTest {
 
     private void testAndCheckGravity(int gravity, float currWidth, float currHeight,
             float translationX, float translationY) {
-        TickerView.realignAndClipCanvasForGravity(canvas, gravity, rect, currWidth,
+        TickerView.realignAndClipCanvasForGravity(canvas, gravity, viewBounds, currWidth,
                 currHeight);
 
         verify(canvas).translate(translationX, translationY);
