@@ -54,7 +54,7 @@ import android.view.animation.Interpolator;
 public class TickerView extends View {
     private static final int DEFAULT_TEXT_SIZE = 12;
     private static final int DEFAULT_TEXT_COLOR = Color.BLACK;
-    private static final long DEFAULT_ANIMATION_DURATION = 350;
+    private static final int DEFAULT_ANIMATION_DURATION = 350;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR =
             new AccelerateDecelerateInterpolator();
 
@@ -71,7 +71,7 @@ public class TickerView extends View {
     // View attributes, defaults are set in init().
     private float textSize;
     private int textColor;
-    private long animationDurationInMillis;
+    private int animationDurationInMillis;
     private Interpolator animationInterpolator;
 
     public TickerView(Context context) {
@@ -117,12 +117,8 @@ public class TickerView extends View {
                         res.getDisplayMetrics()));
         setTextSize(textSize);
 
-        if (arr.hasValue(R.styleable.TickerView_ticker_animationDuration)) {
-            //cannot use default here, as it upsets the compiler due to int vs long
-            animationDurationInMillis = arr.getInt(R.styleable.TickerView_ticker_animationDuration, 0);
-        } else {
-            animationDurationInMillis = DEFAULT_ANIMATION_DURATION;
-        }
+        animationDurationInMillis = arr.getInt(R.styleable.TickerView_ticker_animationDuration,
+                DEFAULT_ANIMATION_DURATION);
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
 
         arr.recycle();
