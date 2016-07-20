@@ -32,7 +32,8 @@ import java.util.Map;
  *
  * @author Jin Cao, Robinhood
  */
-class TickerColumnManager extends ArrayList<TickerColumn> {
+class TickerColumnManager {
+    final ArrayList<TickerColumn> tickerColumns = new ArrayList<>();
     private final TickerDrawMetrics metrics;
 
     // The character list that dictates how to transition from one character to another.
@@ -62,9 +63,9 @@ class TickerColumnManager extends ArrayList<TickerColumn> {
      */
     boolean shouldDebounceText(char[] text) {
         final int newTextSize = text.length;
-        if (newTextSize == size()) {
+        if (newTextSize == tickerColumns.size()) {
             for (int i = 0; i < newTextSize; i++) {
-                if (text[i] != get(i).getTargetChar()) {
+                if (text[i] != tickerColumns.get(i).getTargetChar()) {
                     return false;
                 }
             }
@@ -89,33 +90,33 @@ class TickerColumnManager extends ArrayList<TickerColumn> {
             ensureColumnSize(newTextSize);
         }
 
-        final int columnsSize = size();
+        final int columnsSize = tickerColumns.size();
         for (int i = 0; i < columnsSize; i++) {
-            get(i).setTargetChar(i < newTextSize ? text[i] : TickerUtils.EMPTY_CHAR);
+            tickerColumns.get(i).setTargetChar(i < newTextSize ? text[i] : TickerUtils.EMPTY_CHAR);
         }
 
         return true;
     }
 
     void setAnimationProgress(float animationProgress) {
-        for (int i = 0, size = size(); i < size; i++) {
-            final TickerColumn column = get(i);
+        for (int i = 0, size = tickerColumns.size(); i < size; i++) {
+            final TickerColumn column = tickerColumns.get(i);
             column.setAnimationProgress(animationProgress);
         }
     }
 
     float getMinimumRequiredWidth() {
         float width = 0f;
-        for (int i = 0, size = size(); i < size; i++) {
-            width += get(i).getMinimumRequiredWidth();
+        for (int i = 0, size = tickerColumns.size(); i < size; i++) {
+            width += tickerColumns.get(i).getMinimumRequiredWidth();
         }
         return width;
     }
 
     float getCurrentWidth() {
         float width = 0f;
-        for (int i = 0, size = size(); i < size; i++) {
-            width += get(i).getCurrentWidth();
+        for (int i = 0, size = tickerColumns.size(); i < size; i++) {
+            width += tickerColumns.get(i).getCurrentWidth();
         }
         return width;
     }
@@ -126,8 +127,8 @@ class TickerColumnManager extends ArrayList<TickerColumn> {
      * accordingly for the draw procedures.
      */
     void draw(Canvas canvas, Paint textPaint) {
-        for (int i = 0, size = size(); i < size; i++) {
-            final TickerColumn column = get(i);
+        for (int i = 0, size = tickerColumns.size(); i < size; i++) {
+            final TickerColumn column = tickerColumns.get(i);
             column.draw(canvas, textPaint);
             canvas.translate(column.getCurrentWidth(), 0f);
         }
@@ -137,12 +138,12 @@ class TickerColumnManager extends ArrayList<TickerColumn> {
      * Ensure that the number of columns matches {@param targetSize}.
      */
     void ensureColumnSize(int targetSize) {
-        final int columnSize = size();
+        final int columnSize = tickerColumns.size();
         if (targetSize > columnSize) {
             insertColumnsUpTo(targetSize);
         } else {
             for (int i = 0; i < columnSize - targetSize; i++) {
-                remove(size() - 1);
+                tickerColumns.remove(tickerColumns.size() - 1);
             }
         }
     }
@@ -151,11 +152,11 @@ class TickerColumnManager extends ArrayList<TickerColumn> {
      * Insert (if applicable) columns until the number of columns match {@param targetSize}.
      */
     void insertColumnsUpTo(int targetSize) {
-        final int currentSize = size();
+        final int currentSize = tickerColumns.size();
         if (targetSize > currentSize) {
             final int toInsert = targetSize - currentSize;
             for (int i = 0; i < toInsert; i++) {
-                add(new TickerColumn(characterList, characterIndicesMap, metrics));
+                tickerColumns.add(new TickerColumn(characterList, characterIndicesMap, metrics));
             }
         }
     }
