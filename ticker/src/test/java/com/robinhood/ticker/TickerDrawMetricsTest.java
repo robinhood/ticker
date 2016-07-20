@@ -4,6 +4,8 @@ import android.graphics.Paint;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -13,12 +15,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class TickerDrawMetricsTest {
-    private Paint paint;
+    @Mock  Paint paint;
     private TickerDrawMetrics metrics;
 
     @Before
     public void setup() {
-        paint = mock(Paint.class);
+        MockitoAnnotations.initMocks(this);
+
         final Paint.FontMetrics fontMetrics = new Paint.FontMetrics();
         fontMetrics.top = -50f;
         fontMetrics.bottom = 20f;

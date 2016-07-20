@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="TickerView">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="ticker_TickerView">
         <attr name="ticker_textColor" format="reference|color" />
         <attr name="ticker_textSize" format="reference|dimension" />
         <attr name="ticker_animationDuration" format="reference|integer" />
+        <attr name="android:gravity" tools:ignore="ResourceName" />
     </declare-styleable>
 </resources>

@@ -9,6 +9,7 @@
         android:id="@+id/ticker1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
         app:ticker_textColor="@color/colorPrimary"
         app:ticker_textSize="50sp" />
@@ -17,6 +18,7 @@
         android:id="@+id/ticker2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
         app:ticker_textColor="@color/colorPrimary"
         app:ticker_textSize="50sp" />
@@ -25,6 +27,7 @@
         android:id="@+id/ticker3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
         app:ticker_textColor="@color/colorPrimary"
         app:ticker_textSize="50sp" />

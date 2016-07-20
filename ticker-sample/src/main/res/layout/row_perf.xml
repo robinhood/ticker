@@ -8,24 +8,28 @@
         android:id="@+id/ticker1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center" />
 
 </LinearLayout>

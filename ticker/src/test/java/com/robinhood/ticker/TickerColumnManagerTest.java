@@ -2,6 +2,8 @@ package com.robinhood.ticker;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,11 +11,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class TickerColumnManagerTest {
+    @Mock TickerDrawMetrics metrics;
+
     private TickerColumnManager tickerColumnManager;
 
     @Before
     public void setup() {
-        final TickerDrawMetrics metrics = mock(TickerDrawMetrics.class);
+        MockitoAnnotations.initMocks(this);
+
         tickerColumnManager = new TickerColumnManager(metrics);
         tickerColumnManager.setCharacterList((TickerUtils.EMPTY_CHAR + "1234567890").toCharArray());
     }

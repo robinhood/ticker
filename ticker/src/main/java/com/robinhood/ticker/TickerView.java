@@ -30,6 +30,7 @@ import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -58,6 +59,7 @@ public class TickerView extends View {
     private static final int DEFAULT_ANIMATION_DURATION = 350;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR =
             new AccelerateDecelerateInterpolator();
+    private static final int DEFAULT_GRAVITY = Gravity.START;
 
     protected final Paint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
@@ -74,6 +76,7 @@ public class TickerView extends View {
     private int textColor;
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
+    private int gravity;
 
     public TickerView(Context context) {
         super(context);
@@ -107,20 +110,21 @@ public class TickerView extends View {
         final Resources res = context.getResources();
 
         // Set the view attributes from XML or from default values defined in this class
-        final TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.TickerView,
+        final TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.ticker_TickerView,
                 defStyleAttr, defStyleRes);
 
-        final int textColor = arr.getColor(R.styleable.TickerView_ticker_textColor,
+        final int textColor = arr.getColor(R.styleable.ticker_TickerView_ticker_textColor,
                 DEFAULT_TEXT_COLOR);
         setTextColor(textColor);
-        final float textSize = arr.getDimension(R.styleable.TickerView_ticker_textSize,
+        final float textSize = arr.getDimension(R.styleable.ticker_TickerView_ticker_textSize,
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE,
                         res.getDisplayMetrics()));
         setTextSize(textSize);
 
-        animationDurationInMillis = arr.getInt(R.styleable.TickerView_ticker_animationDuration,
-                DEFAULT_ANIMATION_DURATION);
+        animationDurationInMillis = arr.getInt(
+                R.styleable.ticker_TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
+        gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, DEFAULT_GRAVITY);
 
         arr.recycle();
 
@@ -157,8 +161,8 @@ public class TickerView extends View {
      */
     public void setCharacterList(char[] characterList) {
         boolean foundEmpty = false;
-        for (int i = 0; i < characterList.length; i++) {
-            if (characterList[i] == TickerUtils.EMPTY_CHAR) {
+        for (char character : characterList) {
+            if (character == TickerUtils.EMPTY_CHAR) {
                 foundEmpty = true;
                 break;
             }
@@ -229,9 +233,11 @@ public class TickerView extends View {
      * @param color the color to set the text to.
      */
     public void setTextColor(int color) {
-        textColor = color;
-        textPaint.setColor(textColor);
-        invalidate();
+        if (this.textColor != color) {
+            textColor = color;
+            textPaint.setColor(textColor);
+            invalidate();
+        }
     }
 
     /**
@@ -248,9 +254,11 @@ public class TickerView extends View {
      * @param textSize the text size to set the text to.
      */
     public void setTextSize(float textSize) {
-        this.textSize = textSize;
-        textPaint.setTextSize(textSize);
-        onTextPaintChanged();
+        if (this.textSize != textSize) {
+            this.textSize = textSize;
+            textPaint.setTextSize(textSize);
+            onTextPaintChanged();
+        }
     }
 
     /**
@@ -302,6 +310,27 @@ public class TickerView extends View {
      */
     public void setAnimationInterpolator(Interpolator animationInterpolator) {
         this.animationInterpolator = animationInterpolator;
+    }
+
+    /**
+     * @return the current text gravity used to align the text. Should be one of the values defined
+     *         in {@link android.view.Gravity}.
+     */
+    public int getGravity() {
+        return gravity;
+    }
+
+    /**
+     * Sets the gravity used to align the text.
+     *
+     * @param gravity the new gravity, should be one of the values defined in
+     *                {@link android.view.Gravity}.
+     */
+    public void setGravity(int gravity) {
+        if (this.gravity != gravity) {
+            this.gravity = gravity;
+            invalidate();
+        }
     }
 
 
@@ -380,17 +409,7 @@ public class TickerView extends View {
 
         canvas.save();
 
-        final int availableWidth = canvasFrame.width();
-        final int availableHeight = canvasFrame.height();
-        final float currentWidth = columnManager.getCurrentWidth();
-        final float currentHeight = metrics.getCharHeight();
-
-        // We translate first by the canvas frame and then re-align so that we are drawing in
-        // the center of the canvas (if availableWidth is greater than currentWidth).
-        final float translationX = canvasFrame.left + (availableWidth - currentWidth) / 2f;
-        final float translationY = canvasFrame.top + (availableHeight - currentHeight) / 2f;
-        canvas.translate(translationX ,translationY);
-        canvas.clipRect(0f, 0f, currentWidth, currentHeight);
+        realignAndClipCanvasForGravity(canvas);
 
         // canvas.drawText writes the text on the baseline so we need to translate beforehand.
         canvas.translate(0f, metrics.getCharBaseline());
@@ -398,5 +417,42 @@ public class TickerView extends View {
         columnManager.draw(canvas, textPaint);
 
         canvas.restore();
+    }
+
+    private void realignAndClipCanvasForGravity(Canvas canvas) {
+        final float currentWidth = columnManager.getCurrentWidth();
+        final float currentHeight = metrics.getCharHeight();
+        realignAndClipCanvasForGravity(canvas, gravity, canvasFrame, currentWidth, currentHeight);
+    }
+
+    // VisibleForTesting
+    static void realignAndClipCanvasForGravity(Canvas canvas, int gravity, Rect canvasFrame,
+            float currentWidth, float currentHeight) {
+        final int availableWidth = canvasFrame.width();
+        final int availableHeight = canvasFrame.height();
+
+        float translationX = 0;
+        float translationY = 0;
+        if ((gravity & Gravity.CENTER_VERTICAL) == Gravity.CENTER_VERTICAL) {
+            translationY = canvasFrame.top + (availableHeight - currentHeight) / 2f;
+        }
+        if ((gravity & Gravity.CENTER_HORIZONTAL) == Gravity.CENTER_HORIZONTAL) {
+            translationX = canvasFrame.left + (availableWidth - currentWidth) / 2f;
+        }
+        if ((gravity & Gravity.TOP) == Gravity.TOP) {
+            translationY = 0;
+        }
+        if ((gravity & Gravity.BOTTOM) == Gravity.BOTTOM) {
+            translationY = canvasFrame.top + (availableHeight - currentHeight);
+        }
+        if ((gravity & Gravity.START) == Gravity.START) {
+            translationX = 0;
+        }
+        if ((gravity & Gravity.END) == Gravity.END) {
+            translationX = canvasFrame.left + (availableWidth - currentWidth);
+        }
+
+        canvas.translate(translationX ,translationY);
+        canvas.clipRect(0f, 0f, currentWidth, currentHeight);
     }
 }
