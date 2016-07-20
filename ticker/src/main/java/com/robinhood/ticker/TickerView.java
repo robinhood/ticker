@@ -71,7 +71,7 @@ public class TickerView extends View {
     // View attributes, defaults are set in init().
     private float textSize;
     private int textColor;
-    private int animationDurationInMillis;
+    private long animationDurationInMillis;
     private Interpolator animationInterpolator;
 
     public TickerView(Context context) {
