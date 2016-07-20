@@ -3,5 +3,6 @@
     <declare-styleable name="TickerView">
         <attr name="ticker_textColor" format="reference|color" />
         <attr name="ticker_textSize" format="reference|dimension" />
+        <attr name="ticker_animationDuration" format="reference|integer" />
     </declare-styleable>
 </resources>

@@ -117,7 +117,12 @@ public class TickerView extends View {
                         res.getDisplayMetrics()));
         setTextSize(textSize);
 
-        animationDurationInMillis = DEFAULT_ANIMATION_DURATION;
+        if (arr.hasValue(R.styleable.TickerView_ticker_animationDuration)) {
+            //cannot use default here, as it upsets the compiler due to int vs long
+            animationDurationInMillis = arr.getInt(R.styleable.TickerView_ticker_animationDuration, 0);
+        } else {
+            animationDurationInMillis = DEFAULT_ANIMATION_DURATION;
+        }
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
 
         arr.recycle();
