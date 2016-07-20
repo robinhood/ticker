@@ -25,6 +25,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -248,6 +249,23 @@ public class TickerView extends View {
     public void setTextSize(float textSize) {
         this.textSize = textSize;
         textPaint.setTextSize(textSize);
+        onTextPaintChanged();
+    }
+
+    /**
+     * @return the current text typeface.
+     */
+    public Typeface getTypeface() {
+        return textPaint.getTypeface();
+    }
+
+    /**
+     * Sets the typeface size used by this view.
+     *
+     * @param typeface the typeface to use on the text.
+     */
+    public void setTypeface(Typeface typeface) {
+        textPaint.setTypeface(typeface);
         onTextPaintChanged();
     }
 
