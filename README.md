@@ -48,8 +48,10 @@ We currently support a fairly limited subset of customizations at the moment so 
 You can customize the looks and feels of the `TickerView` via XML:
 
 ```xml
+android:gravity="center"
 app:ticker_textColor="@color/colorPrimary"
-app:ticker_textSize="16sp" 
+app:ticker_textSize="16sp"
+app:ticker_animationDuration="1500"
 ```
 
 Or Java:
@@ -57,8 +59,10 @@ Or Java:
 ```java
 tickerView.setTextColor(textColor);
 tickerView.setTextSize(textSize);
+tickerView.setTypeface(myCustomTypeface);
 tickerView.setAnimationDuration(500);
 tickerView.setAnimationInterpolator(new OvershootInterpolator());
+tickerView.setGravity(Gravity.START);
 ```
 
 
