@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.robinhood.ticker.TickerView
@@ -11,8 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
-        app:ticker_textColor="@color/colorPrimary"
-        app:ticker_textSize="50sp" />
+        android:textAppearance="@style/TickerTextAppearance" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker2"
@@ -20,8 +18,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
-        app:ticker_textColor="@color/colorPrimary"
-        app:ticker_textSize="50sp" />
+        android:textAppearance="@style/TickerTextAppearance" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker3"
@@ -29,8 +26,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
-        app:ticker_textColor="@color/colorPrimary"
-        app:ticker_textSize="50sp" />
+        android:textAppearance="@style/TickerTextAppearance" />
 
     <Button
         android:id="@+id/perfBtn"

@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TickerTextAppearance">
+        <item name="android:textColor">?colorPrimary</item>
+        <item name="android:textSize">50sp</item>
+    </style>
+
 </resources>

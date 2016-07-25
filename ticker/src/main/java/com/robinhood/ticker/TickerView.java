@@ -109,22 +109,48 @@ public class TickerView extends View {
     protected void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final Resources res = context.getResources();
 
+        int textColor = DEFAULT_TEXT_COLOR;
+        float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE,
+                res.getDisplayMetrics());
+        int animationDurationInMillis = DEFAULT_ANIMATION_DURATION;
+        int gravity = DEFAULT_GRAVITY;
+
         // Set the view attributes from XML or from default values defined in this class
         final TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.ticker_TickerView,
                 defStyleAttr, defStyleRes);
 
-        final int textColor = arr.getColor(R.styleable.ticker_TickerView_ticker_textColor,
-                DEFAULT_TEXT_COLOR);
-        setTextColor(textColor);
-        final float textSize = arr.getDimension(R.styleable.ticker_TickerView_ticker_textSize,
-                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE,
-                        res.getDisplayMetrics()));
-        setTextSize(textSize);
+        final int textAppearanceResId = arr.getResourceId(
+                R.styleable.ticker_TickerView_android_textAppearance, -1);
 
+        // Check textAppearance first
+        if (textAppearanceResId != -1) {
+            final TypedArray textAppearanceArr = context.obtainStyledAttributes(
+                    textAppearanceResId,
+                    new int[] {
+                            // TODO: having textColor first here does not work, why?
+                            android.R.attr.textSize,
+                            android.R.attr.textColor,
+                    });
+
+            textSize = textAppearanceArr.getDimension(0, textSize);
+            textColor = textAppearanceArr.getColor(1, textColor);
+
+            textAppearanceArr.recycle();
+        }
+
+        // Custom set attributes on the view should override textAppearance if applicable.
         animationDurationInMillis = arr.getInt(
-                R.styleable.ticker_TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
+                R.styleable.ticker_TickerView_ticker_animationDuration, animationDurationInMillis);
+        gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, gravity);
+        textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
+        textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
+
+        // After we've fetched the correct values for the attributes, set them on the view
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
-        gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, DEFAULT_GRAVITY);
+        this.animationDurationInMillis = animationDurationInMillis;
+        this.gravity = gravity;
+        setTextColor(textColor);
+        setTextSize(textSize);
 
         arr.recycle();
 
