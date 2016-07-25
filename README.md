@@ -49,8 +49,8 @@ You can customize the looks and feels of the `TickerView` via XML:
 
 ```xml
 android:gravity="center"
-app:ticker_textColor="@color/colorPrimary"
-app:ticker_textSize="16sp"
+android:textColor="@color/colorPrimary"
+android:textSize="16sp"
 app:ticker_animationDuration="1500"
 ```
 
@@ -64,6 +64,8 @@ tickerView.setAnimationDuration(500);
 tickerView.setAnimationInterpolator(new OvershootInterpolator());
 tickerView.setGravity(Gravity.START);
 ```
+
+Note that you can also specify `android:textColor` and `android:textSize` attributes using `android:textAppearance` and provide it with an appropriate style.
 
 
 Performance
@@ -88,9 +90,6 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
 
 
 

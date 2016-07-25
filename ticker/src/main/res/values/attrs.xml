@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <declare-styleable name="ticker_TickerView">
-        <attr name="ticker_textColor" format="reference|color" />
-        <attr name="ticker_textSize" format="reference|dimension" />
         <attr name="ticker_animationDuration" format="reference|integer" />
+
+        <!-- Custom implementations of common android text attributes -->
         <attr name="android:gravity" tools:ignore="ResourceName" />
+        <attr name="android:textAppearance" tools:ignore="ResourceName" />
+        <attr name="android:textColor" tools:ignore="ResourceName" />
+        <attr name="android:textSize" tools:ignore="ResourceName" />
     </declare-styleable>
 </resources>
