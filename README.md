@@ -14,7 +14,7 @@ Getting started
 Add the ticker dependency to your `build.gradle`.
 
 ```groovy
-compile 'com.robinhood.ticker:ticker:1.0.0'
+compile 'com.robinhood.ticker:ticker:1.0.1'
 ```
 
 
