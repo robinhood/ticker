@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,17 +83,40 @@ class TickerColumnManager {
             throw new IllegalStateException("Need to call setCharacterList(char[]) first.");
         }
 
-        final int newTextSize = text.length;
-        if (animate) {
-            // If we are animating, we don't want to remove old columns yet.
-            insertColumnsUpTo(newTextSize);
-        } else {
-            ensureColumnSize(newTextSize);
+        // First remove any zero-width columns
+        for (int i = 0; i < tickerColumns.size(); ) {
+            final TickerColumn tickerColumn = tickerColumns.get(i);
+            if (tickerColumn.getCurrentWidth() > 0) {
+                i++;
+            } else {
+                tickerColumns.remove(i);
+            }
         }
 
-        final int columnsSize = tickerColumns.size();
-        for (int i = 0; i < columnsSize; i++) {
-            tickerColumns.get(i).setTargetChar(i < newTextSize ? text[i] : TickerUtils.EMPTY_CHAR);
+        final int[] actions = LevenshteinUtils.computeColumnActions(getCurrentText(), text);
+        int columnIndex = 0;
+        int textIndex = 0;
+        for (int i = 0; i < actions.length; i++) {
+            switch (actions[i]) {
+                case LevenshteinUtils.ACTION_INSERT:
+                    tickerColumns.add(columnIndex,
+                            new TickerColumn(characterList, characterIndicesMap, metrics));
+                case LevenshteinUtils.ACTION_SAME:
+                    tickerColumns.get(columnIndex).setTargetChar(text[textIndex]);
+                    columnIndex++;
+                    textIndex++;
+                    break;
+                case LevenshteinUtils.ACTION_DELETE:
+                    if (animate) {
+                        tickerColumns.get(columnIndex).setTargetChar(TickerUtils.EMPTY_CHAR);
+                        columnIndex++;
+                    } else {
+                        tickerColumns.remove(columnIndex);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown action: " + actions[i]);
+            }
         }
 
         return true;
@@ -119,6 +143,15 @@ class TickerColumnManager {
             width += tickerColumns.get(i).getCurrentWidth();
         }
         return width;
+    }
+
+    char[] getCurrentText() {
+        final int size = tickerColumns.size();
+        final char[] currentText = new char[size];
+        for (int i = 0; i < size; i++) {
+            currentText[i] = tickerColumns.get(i).getCurrentChar();
+        }
+        return currentText;
     }
 
     /**
