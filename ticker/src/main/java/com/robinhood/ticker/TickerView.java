@@ -80,7 +80,7 @@ public class TickerView extends View {
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
     private int gravity;
-    private boolean animateMeasurementChanges;
+    private boolean animateMeasurementChange;
 
     public TickerView(Context context) {
         super(context);
@@ -116,7 +116,6 @@ public class TickerView extends View {
         int textColor = DEFAULT_TEXT_COLOR;
         float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE,
                 res.getDisplayMetrics());
-        int animationDurationInMillis = DEFAULT_ANIMATION_DURATION;
         int gravity = DEFAULT_GRAVITY;
 
         // Set the view attributes from XML or from default values defined in this class
@@ -143,15 +142,16 @@ public class TickerView extends View {
         }
 
         // Custom set attributes on the view should override textAppearance if applicable.
-        animationDurationInMillis = arr.getInt(
-                R.styleable.ticker_TickerView_ticker_animationDuration, animationDurationInMillis);
         gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, gravity);
         textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
         textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
 
         // After we've fetched the correct values for the attributes, set them on the view
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
-        this.animationDurationInMillis = animationDurationInMillis;
+        this.animationDurationInMillis = arr.getInt(
+                R.styleable.ticker_TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
+        this.animateMeasurementChange = arr.getBoolean(
+                R.styleable.ticker_TickerView_ticker_animateMeasurementChange, false);
         this.gravity = gravity;
         setTextColor(textColor);
         setTextSize(textSize);
@@ -381,17 +381,17 @@ public class TickerView extends View {
      *
      * <p>This flag is disabled by default.
      *
-     * @param animateMeasurementChanges whether or not to animate measurement changes.
+     * @param animateMeasurementChange whether or not to animate measurement changes.
      */
-    public void setAnimateMeasurementChanges(boolean animateMeasurementChanges) {
-        this.animateMeasurementChanges = animateMeasurementChanges;
+    public void setAnimateMeasurementChange(boolean animateMeasurementChange) {
+        this.animateMeasurementChange = animateMeasurementChange;
     }
 
     /**
      * @return whether or not we are currently animating measurement changes.
      */
-    public boolean getAnimateMeasurementChanges() {
-        return animateMeasurementChanges;
+    public boolean getAnimateMeasurementChange() {
+        return animateMeasurementChange;
     }
 
 
@@ -413,7 +413,7 @@ public class TickerView extends View {
     }
 
     private int computeDesiredWidth() {
-        final int contentWidth = (int) (animateMeasurementChanges ?
+        final int contentWidth = (int) (animateMeasurementChange ?
                 columnManager.getCurrentWidth() : columnManager.getMinimumRequiredWidth());
         return contentWidth + getPaddingLeft() + getPaddingRight();
     }
