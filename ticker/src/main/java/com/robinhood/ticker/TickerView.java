@@ -379,6 +379,9 @@ public class TickerView extends View {
      * the entering/exiting character might get truncated by the view's view bounds as the width
      * shrinks or expands.
      *
+     * <p>Warning: using this feature may degrade performance as it will force a re-measure and
+     * re-layout during each animation frame.
+     *
      * <p>This flag is disabled by default.
      *
      * @param animateMeasurementChange whether or not to animate measurement changes.
