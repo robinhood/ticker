@@ -98,6 +98,13 @@ class TickerColumnManager {
         return true;
     }
 
+    void onAnimationEnd() {
+        for (int i = 0, size = tickerColumns.size(); i < size; i++) {
+            final TickerColumn column = tickerColumns.get(i);
+            column.onAnimationEnd();
+        }
+    }
+
     void setAnimationProgress(float animationProgress) {
         for (int i = 0, size = tickerColumns.size(); i < size; i++) {
             final TickerColumn column = tickerColumns.get(i);

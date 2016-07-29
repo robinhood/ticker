@@ -118,6 +118,10 @@ class TickerColumn {
         endIndex = characterIndicesMap.get(targetChar);
     }
 
+    void onAnimationEnd() {
+        minimumRequiredWidth = currentWidth;
+    }
+
     void setAnimationProgress(float animationProgress) {
         if (animationProgress == 1f) {
             // Animation finished (or never started), set to stable state.
