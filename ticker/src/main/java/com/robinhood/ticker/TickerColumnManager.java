@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,7 +77,7 @@ class TickerColumnManager {
     /**
      * Tell the column manager the new target text that it should display.
      */
-    boolean setText(char[] text, boolean animate) {
+    void setText(char[] text, boolean animate) {
         if (characterList == null) {
             throw new IllegalStateException("Need to call setCharacterList(char[]) first.");
         }
@@ -93,6 +92,7 @@ class TickerColumnManager {
             }
         }
 
+        // Use Levenshtein distance algorithm to figure out how to manipulate the columns
         final int[] actions = LevenshteinUtils.computeColumnActions(getCurrentText(), text);
         int columnIndex = 0;
         int textIndex = 0;
@@ -118,8 +118,6 @@ class TickerColumnManager {
                     throw new IllegalArgumentException("Unknown action: " + actions[i]);
             }
         }
-
-        return true;
     }
 
     void setAnimationProgress(float animationProgress) {
@@ -164,33 +162,6 @@ class TickerColumnManager {
             final TickerColumn column = tickerColumns.get(i);
             column.draw(canvas, textPaint);
             canvas.translate(column.getCurrentWidth(), 0f);
-        }
-    }
-
-    /**
-     * Ensure that the number of columns matches {@param targetSize}.
-     */
-    void ensureColumnSize(int targetSize) {
-        final int columnSize = tickerColumns.size();
-        if (targetSize > columnSize) {
-            insertColumnsUpTo(targetSize);
-        } else {
-            for (int i = 0; i < columnSize - targetSize; i++) {
-                tickerColumns.remove(tickerColumns.size() - 1);
-            }
-        }
-    }
-
-    /**
-     * Insert (if applicable) columns until the number of columns match {@param targetSize}.
-     */
-    void insertColumnsUpTo(int targetSize) {
-        final int currentSize = tickerColumns.size();
-        if (targetSize > currentSize) {
-            final int toInsert = targetSize - currentSize;
-            for (int i = 0; i < toInsert; i++) {
-                tickerColumns.add(new TickerColumn(characterList, characterIndicesMap, metrics));
-            }
         }
     }
 }

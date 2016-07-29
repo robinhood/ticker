@@ -55,7 +55,8 @@ public class MainActivity extends BaseActivity {
         final int digits = RANDOM.nextInt(2) + 6;
 
         ticker1.setText(getRandomNumber(digits));
-        ticker2.setText("$" + Float.toString(RANDOM.nextFloat() * 100).substring(0, digits));
+        final String currencyFloat = Float.toString(RANDOM.nextFloat() * 100);
+        ticker2.setText("$" + currencyFloat.substring(0, Math.min(digits, currencyFloat.length())));
         ticker3.setText(generateChars(RANDOM, alphabetlist, digits));
     }
 
