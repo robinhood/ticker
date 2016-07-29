@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <declare-styleable name="ticker_TickerView">
         <attr name="ticker_animationDuration" format="reference|integer" />
+        <attr name="ticker_animateMeasurementChange" format="reference|boolean" />
 
         <!-- Custom implementations of common android text attributes -->
         <attr name="android:gravity" tools:ignore="ResourceName" />
