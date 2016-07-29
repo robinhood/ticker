@@ -77,7 +77,7 @@ class TickerColumnManager {
     /**
      * Tell the column manager the new target text that it should display.
      */
-    void setText(char[] text, boolean animate) {
+    void setText(char[] text) {
         if (characterList == null) {
             throw new IllegalStateException("Need to call setCharacterList(char[]) first.");
         }
@@ -107,12 +107,8 @@ class TickerColumnManager {
                     textIndex++;
                     break;
                 case LevenshteinUtils.ACTION_DELETE:
-                    if (animate) {
-                        tickerColumns.get(columnIndex).setTargetChar(TickerUtils.EMPTY_CHAR);
-                        columnIndex++;
-                    } else {
-                        tickerColumns.remove(columnIndex);
-                    }
+                    tickerColumns.get(columnIndex).setTargetChar(TickerUtils.EMPTY_CHAR);
+                    columnIndex++;
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown action: " + actions[i]);
