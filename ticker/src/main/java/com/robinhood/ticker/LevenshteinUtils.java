@@ -5,9 +5,9 @@ package com.robinhood.ticker;
  * https://en.wikipedia.org/wiki/Levenshtein_distance
  */
 public class LevenshteinUtils {
-    public static final int ACTION_SAME = 0;
-    public static final int ACTION_INSERT = 1;
-    public static final int ACTION_DELETE = 2;
+    static final int ACTION_SAME = 0;
+    static final int ACTION_INSERT = 1;
+    static final int ACTION_DELETE = 2;
 
     /**
      * Run a slightly modified version of Levenshtein distance algorithm to compute the minimum
