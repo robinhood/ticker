@@ -91,6 +91,10 @@ class TickerColumn {
         currentBottomDelta = 0f;
     }
 
+    char getCurrentChar() {
+        return currentChar;
+    }
+
     char getTargetChar() {
         return targetChar;
     }

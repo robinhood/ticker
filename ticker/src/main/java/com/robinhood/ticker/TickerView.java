@@ -238,7 +238,7 @@ public class TickerView extends View {
             return;
         }
 
-        columnManager.setText(targetText, animate);
+        columnManager.setText(targetText);
         setContentDescription(text);
         checkForRelayout();
 

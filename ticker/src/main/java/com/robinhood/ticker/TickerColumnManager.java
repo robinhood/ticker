@@ -77,25 +77,43 @@ class TickerColumnManager {
     /**
      * Tell the column manager the new target text that it should display.
      */
-    boolean setText(char[] text, boolean animate) {
+    void setText(char[] text) {
         if (characterList == null) {
             throw new IllegalStateException("Need to call setCharacterList(char[]) first.");
         }
 
-        final int newTextSize = text.length;
-        if (animate) {
-            // If we are animating, we don't want to remove old columns yet.
-            insertColumnsUpTo(newTextSize);
-        } else {
-            ensureColumnSize(newTextSize);
+        // First remove any zero-width columns
+        for (int i = 0; i < tickerColumns.size(); ) {
+            final TickerColumn tickerColumn = tickerColumns.get(i);
+            if (tickerColumn.getCurrentWidth() > 0) {
+                i++;
+            } else {
+                tickerColumns.remove(i);
+            }
         }
 
-        final int columnsSize = tickerColumns.size();
-        for (int i = 0; i < columnsSize; i++) {
-            tickerColumns.get(i).setTargetChar(i < newTextSize ? text[i] : TickerUtils.EMPTY_CHAR);
+        // Use Levenshtein distance algorithm to figure out how to manipulate the columns
+        final int[] actions = LevenshteinUtils.computeColumnActions(getCurrentText(), text);
+        int columnIndex = 0;
+        int textIndex = 0;
+        for (int i = 0; i < actions.length; i++) {
+            switch (actions[i]) {
+                case LevenshteinUtils.ACTION_INSERT:
+                    tickerColumns.add(columnIndex,
+                            new TickerColumn(characterList, characterIndicesMap, metrics));
+                case LevenshteinUtils.ACTION_SAME:
+                    tickerColumns.get(columnIndex).setTargetChar(text[textIndex]);
+                    columnIndex++;
+                    textIndex++;
+                    break;
+                case LevenshteinUtils.ACTION_DELETE:
+                    tickerColumns.get(columnIndex).setTargetChar(TickerUtils.EMPTY_CHAR);
+                    columnIndex++;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown action: " + actions[i]);
+            }
         }
-
-        return true;
     }
 
     void onAnimationEnd() {
@@ -128,6 +146,15 @@ class TickerColumnManager {
         return width;
     }
 
+    char[] getCurrentText() {
+        final int size = tickerColumns.size();
+        final char[] currentText = new char[size];
+        for (int i = 0; i < size; i++) {
+            currentText[i] = tickerColumns.get(i).getCurrentChar();
+        }
+        return currentText;
+    }
+
     /**
      * This method will draw onto the canvas the appropriate UI state of each column dictated
      * by {@param animationProgress}. As a side effect, this method will also translate the canvas
@@ -138,33 +165,6 @@ class TickerColumnManager {
             final TickerColumn column = tickerColumns.get(i);
             column.draw(canvas, textPaint);
             canvas.translate(column.getCurrentWidth(), 0f);
-        }
-    }
-
-    /**
-     * Ensure that the number of columns matches {@param targetSize}.
-     */
-    void ensureColumnSize(int targetSize) {
-        final int columnSize = tickerColumns.size();
-        if (targetSize > columnSize) {
-            insertColumnsUpTo(targetSize);
-        } else {
-            for (int i = 0; i < columnSize - targetSize; i++) {
-                tickerColumns.remove(tickerColumns.size() - 1);
-            }
-        }
-    }
-
-    /**
-     * Insert (if applicable) columns until the number of columns match {@param targetSize}.
-     */
-    void insertColumnsUpTo(int targetSize) {
-        final int currentSize = tickerColumns.size();
-        if (targetSize > currentSize) {
-            final int toInsert = targetSize - currentSize;
-            for (int i = 0; i < toInsert; i++) {
-                tickerColumns.add(new TickerColumn(characterList, characterIndicesMap, metrics));
-            }
         }
     }
 }
