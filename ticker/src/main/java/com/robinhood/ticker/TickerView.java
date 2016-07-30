@@ -16,6 +16,8 @@
 
 package com.robinhood.ticker;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -70,6 +72,7 @@ public class TickerView extends View {
     private final Rect viewBounds = new Rect();
 
     private ValueAnimator animator;
+    private boolean widthAffectedByContent, heightAffectedByContent;
 
     // View attributes, defaults are set in init().
     private float textSize;
@@ -77,6 +80,7 @@ public class TickerView extends View {
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
     private int gravity;
+    private boolean animateMeasurementChange;
 
     public TickerView(Context context) {
         super(context);
@@ -112,7 +116,6 @@ public class TickerView extends View {
         int textColor = DEFAULT_TEXT_COLOR;
         float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE,
                 res.getDisplayMetrics());
-        int animationDurationInMillis = DEFAULT_ANIMATION_DURATION;
         int gravity = DEFAULT_GRAVITY;
 
         // Set the view attributes from XML or from default values defined in this class
@@ -139,15 +142,16 @@ public class TickerView extends View {
         }
 
         // Custom set attributes on the view should override textAppearance if applicable.
-        animationDurationInMillis = arr.getInt(
-                R.styleable.ticker_TickerView_ticker_animationDuration, animationDurationInMillis);
         gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, gravity);
         textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
         textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
 
         // After we've fetched the correct values for the attributes, set them on the view
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
-        this.animationDurationInMillis = animationDurationInMillis;
+        this.animationDurationInMillis = arr.getInt(
+                R.styleable.ticker_TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
+        this.animateMeasurementChange = arr.getBoolean(
+                R.styleable.ticker_TickerView_ticker_animateMeasurementChange, false);
         this.gravity = gravity;
         setTextColor(textColor);
         setTextSize(textSize);
@@ -159,7 +163,15 @@ public class TickerView extends View {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 columnManager.setAnimationProgress(animation.getAnimatedFraction());
+                checkForRelayout();
                 invalidate();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                columnManager.onAnimationEnd();
+                checkForRelayout();
             }
         });
     }
@@ -227,7 +239,6 @@ public class TickerView extends View {
         }
 
         columnManager.setText(targetText);
-        columnManager.setAnimationProgress(animate ? 0f : 1f);
         setContentDescription(text);
         checkForRelayout();
 
@@ -241,6 +252,8 @@ public class TickerView extends View {
             animator.setInterpolator(animationInterpolator);
             animator.start();
         } else {
+            columnManager.setAnimationProgress(1f);
+            columnManager.onAnimationEnd();
             invalidate();
         }
     }
@@ -359,6 +372,31 @@ public class TickerView extends View {
         }
     }
 
+    /**
+     * Enables/disables the flag to animate measurement changes. If this flag is enabled, any
+     * animation that changes the content's text width (e.g. 9999 -> 10000) will have the view's
+     * measured width animated along with the text width. However, a side effect of this is that
+     * the entering/exiting character might get truncated by the view's view bounds as the width
+     * shrinks or expands.
+     *
+     * <p>Warning: using this feature may degrade performance as it will force a re-measure and
+     * re-layout during each animation frame.
+     *
+     * <p>This flag is disabled by default.
+     *
+     * @param animateMeasurementChange whether or not to animate measurement changes.
+     */
+    public void setAnimateMeasurementChange(boolean animateMeasurementChange) {
+        this.animateMeasurementChange = animateMeasurementChange;
+    }
+
+    /**
+     * @return whether or not we are currently animating measurement changes.
+     */
+    public boolean getAnimateMeasurementChange() {
+        return animateMeasurementChange;
+    }
+
 
     /********** END PUBLIC API **********/
 
@@ -368,13 +406,19 @@ public class TickerView extends View {
      * we set for the previous view state.
      */
     private void checkForRelayout() {
-        if (getWidth() != computeDesiredWidth() || getHeight() != computeDesiredHeight()) {
+        final boolean widthChanged = widthAffectedByContent && getWidth() != computeDesiredWidth();
+        final boolean heightChanged = heightAffectedByContent
+                && getHeight() != computeDesiredHeight();
+
+        if (widthChanged || heightChanged) {
             requestLayout();
         }
     }
 
     private int computeDesiredWidth() {
-        return (int) columnManager.getMinimumRequiredWidth() + getPaddingLeft() + getPaddingRight();
+        final int contentWidth = (int) (animateMeasurementChange ?
+                columnManager.getCurrentWidth() : columnManager.getMinimumRequiredWidth());
+        return contentWidth + getPaddingLeft() + getPaddingRight();
     }
 
     private int computeDesiredHeight() {
@@ -399,22 +443,28 @@ public class TickerView extends View {
 
         switch (widthMode) {
             case MeasureSpec.EXACTLY:
+                widthAffectedByContent = false;
                 break;
             case MeasureSpec.AT_MOST:
+                widthAffectedByContent = true;
                 desiredWidth = Math.min(desiredWidth, computeDesiredWidth());
                 break;
             case MeasureSpec.UNSPECIFIED:
+                widthAffectedByContent = true;
                 desiredWidth = computeDesiredWidth();
                 break;
         }
 
         switch (heightMode) {
             case MeasureSpec.EXACTLY:
+                heightAffectedByContent = false;
                 break;
             case MeasureSpec.AT_MOST:
+                heightAffectedByContent = true;
                 desiredHeight = Math.min(desiredHeight, computeDesiredHeight());
                 break;
             case MeasureSpec.UNSPECIFIED:
+                heightAffectedByContent = true;
                 desiredHeight = computeDesiredHeight();
                 break;
         }
