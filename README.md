@@ -3,7 +3,7 @@
 What is Ticker?
 ===============
 
-Ticker is a simple Android UI component for displaying scrolling text. Think about how an odometer scrolls when going from one number to the next, that is similar to what Ticker does. The Ticker handles smooth animations between strings and also handle string resizing (e.g. animate from "9999" to "10000"). 
+Ticker is a simple Android UI component for displaying scrolling text. Think about how an odometer scrolls when going from one number to the next, that is similar to what Ticker does. The Ticker handles smooth animations between strings and also string resizing (e.g. animate from "9999" to "10000").
 
 You can specify how the animations proceed by defining an array of characters in order. Each character displayed by Ticker is controlled by this array which dictates how to animate from a starting character to a target character. For example, if you just use a basic ASCII character list, when animating from 'A' to 'Z', it will go from 'A' -> 'B' -> ... 'Z'. The character ordering does not wrap around, meaning that to animate from 'Z' to 'A' it will go from 'Z' -> 'Y' -> ... -> 'A'.
 
