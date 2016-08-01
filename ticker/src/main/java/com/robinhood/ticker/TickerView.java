@@ -82,21 +82,43 @@ public class TickerView extends View {
     private int gravity;
     private boolean animateMeasurementChange;
 
+    /**
+     * {@inheritDoc}
+     * @param context
+     */
     public TickerView(Context context) {
         super(context);
         init(context, null, 0, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param context
+     * @param attrs
+     */
     public TickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     */
     public TickerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     * @param defStyleRes
+     */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TickerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -374,7 +396,7 @@ public class TickerView extends View {
 
     /**
      * Enables/disables the flag to animate measurement changes. If this flag is enabled, any
-     * animation that changes the content's text width (e.g. 9999 -> 10000) will have the view's
+     * animation that changes the content's text width (e.g. 9999 to 10000) will have the view's
      * measured width animated along with the text width. However, a side effect of this is that
      * the entering/exiting character might get truncated by the view's view bounds as the width
      * shrinks or expands.
