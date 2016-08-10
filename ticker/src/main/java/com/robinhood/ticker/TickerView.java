@@ -67,11 +67,11 @@ public class TickerView extends View {
 
     private final TickerDrawMetrics metrics = new TickerDrawMetrics(textPaint);
     private final TickerColumnManager columnManager = new TickerColumnManager(metrics);
+    private final ValueAnimator animator = ValueAnimator.ofFloat(1f);
 
     // Minor optimizations for re-positioning the canvas for the composer.
     private final Rect viewBounds = new Rect();
 
-    private ValueAnimator animator;
     private boolean widthAffectedByContent, heightAffectedByContent;
 
     // View attributes, defaults are set in init().
@@ -180,7 +180,6 @@ public class TickerView extends View {
 
         arr.recycle();
 
-        animator = ValueAnimator.ofFloat(1f);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
