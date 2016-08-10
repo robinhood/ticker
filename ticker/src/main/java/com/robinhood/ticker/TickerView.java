@@ -262,7 +262,6 @@ public class TickerView extends View {
 
         columnManager.setText(targetText);
         setContentDescription(text);
-        checkForRelayout();
 
         if (animate) {
             // Kick off the animator that draws the transition
@@ -276,6 +275,7 @@ public class TickerView extends View {
         } else {
             columnManager.setAnimationProgress(1f);
             columnManager.onAnimationEnd();
+            checkForRelayout();
             invalidate();
         }
     }
