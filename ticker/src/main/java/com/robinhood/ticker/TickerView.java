@@ -419,6 +419,26 @@ public class TickerView extends View {
         return animateMeasurementChange;
     }
 
+    /**
+     * Adds a custom {@link android.animation.Animator.AnimatorListener} to listen to animator
+     * update events used by this view.
+     *
+     * @param animatorListener the custom animator listener.
+     */
+    public void addAnimatorListener(Animator.AnimatorListener animatorListener) {
+        animator.addListener(animatorListener);
+    }
+
+    /**
+     * Removes the specified custom {@link android.animation.Animator.AnimatorListener} from
+     * this view.
+     *
+     * @param animatorListener the custom animator listener.
+     */
+    public void removeAnimatorListener(Animator.AnimatorListener animatorListener) {
+        animator.removeListener(animatorListener);
+    }
+
 
     /********** END PUBLIC API **********/
 
