@@ -72,7 +72,7 @@ public class TickerView extends View {
     // Minor optimizations for re-positioning the canvas for the composer.
     private final Rect viewBounds = new Rect();
 
-    private boolean widthAffectedByContent, heightAffectedByContent;
+    private int lastMeasuredDesiredWidth, lastMeasuredDesiredHeight;
 
     // View attributes, defaults are set in init().
     private float textSize;
@@ -430,9 +430,8 @@ public class TickerView extends View {
      * we set for the previous view state.
      */
     private void checkForRelayout() {
-        final boolean widthChanged = widthAffectedByContent && getWidth() != computeDesiredWidth();
-        final boolean heightChanged = heightAffectedByContent
-                && getHeight() != computeDesiredHeight();
+        final boolean widthChanged = lastMeasuredDesiredWidth != computeDesiredWidth();
+        final boolean heightChanged = lastMeasuredDesiredHeight != computeDesiredHeight();
 
         if (widthChanged || heightChanged) {
             requestLayout();
@@ -465,31 +464,28 @@ public class TickerView extends View {
         int desiredWidth = MeasureSpec.getSize(widthMeasureSpec);
         int desiredHeight = MeasureSpec.getSize(heightMeasureSpec);
 
+        lastMeasuredDesiredWidth = computeDesiredWidth();
+        lastMeasuredDesiredHeight = computeDesiredHeight();
+
         switch (widthMode) {
             case MeasureSpec.EXACTLY:
-                widthAffectedByContent = false;
                 break;
             case MeasureSpec.AT_MOST:
-                widthAffectedByContent = true;
-                desiredWidth = Math.min(desiredWidth, computeDesiredWidth());
+                desiredWidth = Math.min(desiredWidth, lastMeasuredDesiredWidth);
                 break;
             case MeasureSpec.UNSPECIFIED:
-                widthAffectedByContent = true;
-                desiredWidth = computeDesiredWidth();
+                desiredWidth = lastMeasuredDesiredWidth;
                 break;
         }
 
         switch (heightMode) {
             case MeasureSpec.EXACTLY:
-                heightAffectedByContent = false;
                 break;
             case MeasureSpec.AT_MOST:
-                heightAffectedByContent = true;
-                desiredHeight = Math.min(desiredHeight, computeDesiredHeight());
+                desiredHeight = Math.min(desiredHeight, lastMeasuredDesiredHeight);
                 break;
             case MeasureSpec.UNSPECIFIED:
-                heightAffectedByContent = true;
-                desiredHeight = computeDesiredHeight();
+                desiredHeight = lastMeasuredDesiredHeight;
                 break;
         }
 
