@@ -82,43 +82,21 @@ public class TickerView extends View {
     private int gravity;
     private boolean animateMeasurementChange;
 
-    /**
-     * {@inheritDoc}
-     * @param context
-     */
     public TickerView(Context context) {
         super(context);
         init(context, null, 0, 0);
     }
 
-    /**
-     * {@inheritDoc}
-     * @param context
-     * @param attrs
-     */
     public TickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0, 0);
     }
 
-    /**
-     * {@inheritDoc}
-     * @param context
-     * @param attrs
-     * @param defStyleAttr
-     */
     public TickerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr, 0);
     }
 
-    /**
-     * {@inheritDoc}
-     * @param context
-     * @param attrs
-     * @param defStyleAttr
-     * @param defStyleRes
-     */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TickerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -131,6 +109,11 @@ public class TickerView extends View {
      *     <li>app:textColor
      *     <li>app:textSize
      * </ul>
+     *
+     * @param context context from constructor
+     * @param attrs attrs from constructor
+     * @param defStyleAttr defStyleAttr from constructor
+     * @param defStyleRes defStyleRes from constructor
      */
     protected void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final Resources res = context.getResources();
