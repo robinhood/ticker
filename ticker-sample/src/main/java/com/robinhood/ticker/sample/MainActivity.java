@@ -38,10 +38,6 @@ public class MainActivity extends BaseActivity {
         ticker2.setCharacterList(CURRENCY_LIST);
         ticker3.setCharacterList(alphabetlist);
 
-        ticker1.setAnimationDuration(500);
-        ticker2.setAnimationDuration(500);
-        ticker3.setAnimationDuration(500);
-
         findViewById(R.id.perfBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

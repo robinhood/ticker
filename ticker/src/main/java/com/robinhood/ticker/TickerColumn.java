@@ -29,6 +29,9 @@ import java.util.Map;
  * @author Jin Cao, Robinhood
  */
 class TickerColumn {
+    private static final int UNKNOWN_START_INDEX = -1;
+    private static final int UNKNOWN_END_INDEX = -2;
+
     private final char[] characterList;
     private final Map<Character, Integer> characterIndicesMap;
     private final TickerDrawMetrics metrics;
@@ -112,14 +115,10 @@ class TickerColumn {
      * current and target characters for the animation.
      */
     private void setCharacterIndices() {
-        if (!characterIndicesMap.containsKey(currentChar) ||
-                !characterIndicesMap.containsKey(targetChar)) {
-            throw new IllegalStateException("No indices found for chars: " +
-                    currentChar + " " + targetChar);
-        }
-
-        startIndex = characterIndicesMap.get(currentChar);
-        endIndex = characterIndicesMap.get(targetChar);
+        startIndex = characterIndicesMap.containsKey(currentChar)
+                ? characterIndicesMap.get(currentChar) : UNKNOWN_START_INDEX;
+        endIndex = characterIndicesMap.containsKey(targetChar)
+                ? characterIndicesMap.get(targetChar) : UNKNOWN_END_INDEX;
     }
 
     void onAnimationEnd() {
@@ -186,7 +185,11 @@ class TickerColumn {
     void draw(Canvas canvas, Paint textPaint) {
         if (drawText(canvas, textPaint, characterList, bottomCharIndex, bottomDelta)) {
             // Save the current drawing state in case our animation gets interrupted
-            currentChar = characterList[bottomCharIndex];
+            if (bottomCharIndex >= 0) {
+                currentChar = characterList[bottomCharIndex];
+            } else if (bottomCharIndex == UNKNOWN_END_INDEX) {
+                currentChar = targetChar;
+            }
             currentBottomDelta = bottomDelta;
         }
 
@@ -208,6 +211,12 @@ class TickerColumn {
             float verticalOffset) {
         if (index >= 0 && index < characterList.length) {
             canvas.drawText(characterList, index, 1, 0f, verticalOffset, textPaint);
+            return true;
+        } else if (startIndex == UNKNOWN_START_INDEX && index == UNKNOWN_START_INDEX) {
+            canvas.drawText(Character.toString(currentChar), 0, 1, 0f, verticalOffset, textPaint);
+            return true;
+        } else if (endIndex == UNKNOWN_END_INDEX && index == UNKNOWN_END_INDEX) {
+            canvas.drawText(Character.toString(targetChar), 0, 1, 0f, verticalOffset, textPaint);
             return true;
         }
         return false;
