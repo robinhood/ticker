@@ -1,3 +1,8 @@
+Version 1.1.1 *(2016-11-08)*
+----------------------------
+* Add minimum support for arbitrary characters.
+* Update support and gradle dependencies.
+
 Version 1.1.0 *(2016-08-11)*
 ----------------------------
 * Performance optimizations for re-measure and re-layout.
