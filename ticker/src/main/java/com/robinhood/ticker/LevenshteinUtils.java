@@ -1,5 +1,8 @@
 package com.robinhood.ticker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Helper class to compute the Levenshtein distance between two strings.
  * https://en.wikipedia.org/wiki/Levenshtein_distance
@@ -27,11 +30,9 @@ public class LevenshteinUtils {
         final int targetLength = target.length;
         final int resultLength = Math.max(sourceLength, targetLength);
 
-        final int[] result = new int[resultLength];
-
         if (sourceLength == targetLength) {
             // No modifications needed if the length of the strings are the same
-            return result;
+            return new int[resultLength];
         }
 
         final int numRows = sourceLength + 1;
@@ -60,38 +61,42 @@ public class LevenshteinUtils {
         }
 
         // Reverse trace the matrix to compute the necessary actions
-        int i = numRows - 1;
-        int j = numCols - 1;
-        int resultIndex = resultLength - 1;
-        while (resultIndex >= 0) {
-            if (i == 0) {
+        final List<Integer> resultList = new ArrayList<>(resultLength * 2);
+        int row = numRows - 1;
+        int col = numCols - 1;
+        while (row > 0 || col > 0) {
+            if (row == 0) {
                 // At the top row, can only move left, meaning insert column
-                result[resultIndex] = ACTION_INSERT;
-                j--;
-            } else if (j == 0) {
+                resultList.add(ACTION_INSERT);
+                col--;
+            } else if (col == 0) {
                 // At the left column, can only move up, meaning delete column
-                result[resultIndex] = ACTION_DELETE;
-                i--;
+                resultList.add(ACTION_DELETE);
+                row--;
             } else {
-                final int top = matrix[i-1][j];
-                final int left = matrix[i][j-1];
-                final int topLeft = matrix[i-1][j-1];
+                final int insert = matrix[row][col-1];
+                final int delete = matrix[row-1][col];
+                final int replace = matrix[row-1][col-1];
 
-                if (topLeft <= top && topLeft <= left) {
-                    result[resultIndex] = ACTION_SAME;
-                    i--;
-                    j--;
-                } else if (top <= left) {
-                    result[resultIndex] = ACTION_DELETE;
-                    i--;
+                if (insert < delete && insert < replace) {
+                    resultList.add(ACTION_INSERT);
+                    col--;
+                } else if (delete < replace) {
+                    resultList.add(ACTION_DELETE);
+                    row--;
                 } else {
-                    result[resultIndex] = ACTION_INSERT;
-                    j--;
+                    resultList.add(ACTION_SAME);
+                    row--;
+                    col--;
                 }
             }
-            resultIndex--;
         }
 
+        final int resultSize = resultList.size();
+        final int[] result = new int[resultSize];
+        for (int i = 0; i < resultSize; i++) {
+            result[resultSize - 1 - i] = resultList.get(i);
+        }
         return result;
     }
 

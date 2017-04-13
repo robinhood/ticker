@@ -32,7 +32,20 @@ public class LevenshteinUtilsTest {
 
     @Test
     public void test_shift() {
+        // The reason why this isn't 20001 which is a shift of "234" over is because that
+        // would require 5 changes rather than 4.
         runTest("1234", "2345", "0000");
+    }
+
+    @Test
+    public void test_mix1() {
+        // "15" should shift to the right 1 place, then delete two columns after "15"
+        runTest("15233", "9151", "100220");
+    }
+
+    @Test
+    public void test_mix2() {
+        runTest("12345", "230", "20020");
     }
 
     @Test
