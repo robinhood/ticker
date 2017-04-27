@@ -117,11 +117,7 @@ public class TickerView extends View {
      */
     protected void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final Resources res = context.getResources();
-
-        int textColor = DEFAULT_TEXT_COLOR;
-        float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE,
-                res.getDisplayMetrics());
-        int gravity = DEFAULT_GRAVITY;
+        final StyledAttributes styledAttributes = new StyledAttributes(res);
 
         // Set the view attributes from XML or from default values defined in this class
         final TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.ticker_TickerView,
@@ -133,23 +129,13 @@ public class TickerView extends View {
         // Check textAppearance first
         if (textAppearanceResId != -1) {
             final TypedArray textAppearanceArr = context.obtainStyledAttributes(
-                    textAppearanceResId,
-                    new int[] {
-                            // TODO: having textColor first here does not work, why?
-                            android.R.attr.textSize,
-                            android.R.attr.textColor,
-                    });
-
-            textSize = textAppearanceArr.getDimension(0, textSize);
-            textColor = textAppearanceArr.getColor(1, textColor);
-
+                    textAppearanceResId, R.styleable.ticker_TickerView);
+            styledAttributes.applyTypedArray(textAppearanceArr);
             textAppearanceArr.recycle();
         }
 
         // Custom set attributes on the view should override textAppearance if applicable.
-        gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, gravity);
-        textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
-        textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
+        styledAttributes.applyTypedArray(arr);
 
         // After we've fetched the correct values for the attributes, set them on the view
         animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
@@ -157,9 +143,15 @@ public class TickerView extends View {
                 R.styleable.ticker_TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
         this.animateMeasurementChange = arr.getBoolean(
                 R.styleable.ticker_TickerView_ticker_animateMeasurementChange, false);
-        this.gravity = gravity;
-        setTextColor(textColor);
-        setTextSize(textSize);
+        this.gravity = styledAttributes.gravity;
+
+        if (styledAttributes.shadowColor != 0) {
+            textPaint.setShadowLayer(styledAttributes.shadowRadius, styledAttributes.shadowDx,
+                    styledAttributes.shadowDy, styledAttributes.shadowColor);
+        }
+
+        setTextColor(styledAttributes.textColor);
+        setTextSize(styledAttributes.textSize);
 
         arr.recycle();
 
@@ -178,6 +170,35 @@ public class TickerView extends View {
                 checkForRelayout();
             }
         });
+    }
+
+    private class StyledAttributes {
+        int gravity;
+        int shadowColor;
+        float shadowDx;
+        float shadowDy;
+        float shadowRadius;
+        int textColor;
+        float textSize;
+
+        StyledAttributes(Resources res) {
+            textColor = DEFAULT_TEXT_COLOR;
+            textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                    DEFAULT_TEXT_SIZE, res.getDisplayMetrics());
+            gravity = DEFAULT_GRAVITY;
+        }
+
+        void applyTypedArray(TypedArray arr) {
+            gravity = arr.getInt(R.styleable.ticker_TickerView_android_gravity, gravity);
+            shadowColor = arr.getColor(R.styleable.ticker_TickerView_android_shadowColor,
+                    shadowColor);
+            shadowDx = arr.getFloat(R.styleable.ticker_TickerView_android_shadowDx, shadowDx);
+            shadowDy = arr.getFloat(R.styleable.ticker_TickerView_android_shadowDy, shadowDy);
+            shadowRadius = arr.getFloat(R.styleable.ticker_TickerView_android_shadowRadius,
+                    shadowRadius);
+            textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
+            textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
+        }
     }
 
 
