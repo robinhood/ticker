@@ -26,6 +26,7 @@
         android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
         android:textAppearance="@style/TickerTextAppearance"
+        android:textStyle="bold"
         app:ticker_animationDuration="500" />
 
     <com.robinhood.ticker.TickerView

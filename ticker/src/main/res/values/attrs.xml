@@ -13,5 +13,6 @@
         <attr name="android:textAppearance" tools:ignore="ResourceName" />
         <attr name="android:textColor" tools:ignore="ResourceName" />
         <attr name="android:textSize" tools:ignore="ResourceName" />
+        <attr name="android:textStyle" tools:ignore="ResourceName" />
     </declare-styleable>
 </resources>

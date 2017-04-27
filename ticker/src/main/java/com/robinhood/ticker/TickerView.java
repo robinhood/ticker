@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.assist.AssistStructure;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -149,6 +150,23 @@ public class TickerView extends View {
             textPaint.setShadowLayer(styledAttributes.shadowRadius, styledAttributes.shadowDx,
                     styledAttributes.shadowDy, styledAttributes.shadowColor);
         }
+        if (styledAttributes.textStyle != 0) {
+            final int textStyle = styledAttributes.textStyle;
+            int flags = textPaint.getFlags();
+            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_BOLD) != 0) {
+                flags |= Paint.FAKE_BOLD_TEXT_FLAG;
+            }
+            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_ITALIC) != 0) {
+                textPaint.setTextSkewX(-0.25f);
+            }
+            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_UNDERLINE) != 0) {
+                flags |= Paint.UNDERLINE_TEXT_FLAG;
+            }
+            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_STRIKE_THRU) != 0) {
+                flags |= Paint.STRIKE_THRU_TEXT_FLAG;
+            }
+            textPaint.setFlags(flags);
+        }
 
         setTextColor(styledAttributes.textColor);
         setTextSize(styledAttributes.textSize);
@@ -180,6 +198,7 @@ public class TickerView extends View {
         float shadowRadius;
         int textColor;
         float textSize;
+        int textStyle;
 
         StyledAttributes(Resources res) {
             textColor = DEFAULT_TEXT_COLOR;
@@ -198,6 +217,7 @@ public class TickerView extends View {
                     shadowRadius);
             textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
             textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
+            textStyle = arr.getInt(R.styleable.ticker_TickerView_android_textStyle, textStyle);
         }
     }
 
@@ -537,7 +557,11 @@ public class TickerView extends View {
     }
 
     private void realignAndClipCanvasForGravity(Canvas canvas) {
-        final float currentWidth = columnManager.getCurrentWidth();
+        float currentWidth = columnManager.getCurrentWidth();
+        final float textSkewX = textPaint.getTextSkewX();
+        if (textSkewX != 0f) {
+            currentWidth += metrics.getLongestCharWidth() * Math.abs(textSkewX);
+        }
         final float currentHeight = metrics.getCharHeight();
         realignAndClipCanvasForGravity(canvas, gravity, viewBounds, currentWidth, currentHeight);
     }
