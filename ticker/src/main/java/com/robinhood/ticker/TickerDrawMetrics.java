@@ -47,6 +47,7 @@ class TickerDrawMetrics {
         final Paint.FontMetrics fm = textPaint.getFontMetrics();
         charHeight = fm.bottom - fm.top;
         charBaseline = -fm.top;
+        longestCharWidth = 0f;
     }
 
     float getCharWidth(char character) {
