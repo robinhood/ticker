@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.assist.AssistStructure;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -76,11 +75,12 @@ public class TickerView extends View {
     private int lastMeasuredDesiredWidth, lastMeasuredDesiredHeight;
 
     // View attributes, defaults are set in init().
-    private float textSize;
+    private int gravity;
     private int textColor;
+    private float textSize;
+    private int textStyle;
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
-    private int gravity;
     private boolean animateMeasurementChange;
 
     public TickerView(Context context) {
@@ -151,21 +151,8 @@ public class TickerView extends View {
                     styledAttributes.shadowDy, styledAttributes.shadowColor);
         }
         if (styledAttributes.textStyle != 0) {
-            final int textStyle = styledAttributes.textStyle;
-            int flags = textPaint.getFlags();
-            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_BOLD) != 0) {
-                flags |= Paint.FAKE_BOLD_TEXT_FLAG;
-            }
-            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_ITALIC) != 0) {
-                textPaint.setTextSkewX(-0.25f);
-            }
-            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_UNDERLINE) != 0) {
-                flags |= Paint.UNDERLINE_TEXT_FLAG;
-            }
-            if ((textStyle & AssistStructure.ViewNode.TEXT_STYLE_STRIKE_THRU) != 0) {
-                flags |= Paint.STRIKE_THRU_TEXT_FLAG;
-            }
-            textPaint.setFlags(flags);
+            textStyle = styledAttributes.textStyle;
+            setTypeface(Typeface.DEFAULT);
         }
 
         setTextColor(styledAttributes.textColor);
@@ -358,6 +345,14 @@ public class TickerView extends View {
      * @param typeface the typeface to use on the text.
      */
     public void setTypeface(Typeface typeface) {
+        if (textStyle == Typeface.BOLD_ITALIC) {
+            typeface = Typeface.create(typeface, Typeface.BOLD_ITALIC);
+        } else if (textStyle == Typeface.BOLD) {
+            typeface = Typeface.create(typeface, Typeface.BOLD);
+        } else if (textStyle == Typeface.ITALIC) {
+            typeface = Typeface.create(typeface, Typeface.ITALIC);
+        }
+
         textPaint.setTypeface(typeface);
         onTextPaintMeasurementChanged();
     }
@@ -557,11 +552,7 @@ public class TickerView extends View {
     }
 
     private void realignAndClipCanvasForGravity(Canvas canvas) {
-        float currentWidth = columnManager.getCurrentWidth();
-        final float textSkewX = textPaint.getTextSkewX();
-        if (textSkewX != 0f) {
-            currentWidth += metrics.getLongestCharWidth() * Math.abs(textSkewX);
-        }
+        final float currentWidth = columnManager.getCurrentWidth();
         final float currentHeight = metrics.getCharHeight();
         realignAndClipCanvasForGravity(canvas, gravity, viewBounds, currentWidth, currentHeight);
     }

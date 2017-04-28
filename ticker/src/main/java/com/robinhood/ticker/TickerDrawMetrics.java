@@ -35,7 +35,6 @@ class TickerDrawMetrics {
     // canvas. These attributes are reset whenever anything on the text paint changes.
     private final Map<Character, Float> charWidths = new HashMap<>(256);
     private float charHeight, charBaseline;
-    private float longestCharWidth;
 
     TickerDrawMetrics(Paint textPaint) {
         this.textPaint = textPaint;
@@ -47,7 +46,6 @@ class TickerDrawMetrics {
         final Paint.FontMetrics fm = textPaint.getFontMetrics();
         charHeight = fm.bottom - fm.top;
         charBaseline = -fm.top;
-        longestCharWidth = 0f;
     }
 
     float getCharWidth(char character) {
@@ -61,9 +59,6 @@ class TickerDrawMetrics {
             return value;
         } else {
             final float width = textPaint.measureText(Character.toString(character));
-            if (width > longestCharWidth) {
-                longestCharWidth = width;
-            }
             charWidths.put(character, width);
             return width;
         }
@@ -71,10 +66,6 @@ class TickerDrawMetrics {
 
     float getCharHeight() {
         return charHeight;
-    }
-
-    float getLongestCharWidth() {
-        return longestCharWidth;
     }
 
     float getCharBaseline() {
