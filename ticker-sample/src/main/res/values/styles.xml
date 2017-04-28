@@ -11,6 +11,7 @@
     <style name="TickerTextAppearance">
         <item name="android:textColor">?colorPrimary</item>
         <item name="android:textSize">50sp</item>
+        <item name="android:textStyle">bold|italic</item>
     </style>
 
 </resources>

@@ -75,11 +75,12 @@ public class TickerView extends View {
     private int lastMeasuredDesiredWidth, lastMeasuredDesiredHeight;
 
     // View attributes, defaults are set in init().
-    private float textSize;
+    private int gravity;
     private int textColor;
+    private float textSize;
+    private int textStyle;
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
-    private int gravity;
     private boolean animateMeasurementChange;
 
     public TickerView(Context context) {
@@ -149,6 +150,10 @@ public class TickerView extends View {
             textPaint.setShadowLayer(styledAttributes.shadowRadius, styledAttributes.shadowDx,
                     styledAttributes.shadowDy, styledAttributes.shadowColor);
         }
+        if (styledAttributes.textStyle != 0) {
+            textStyle = styledAttributes.textStyle;
+            setTypeface(textPaint.getTypeface());
+        }
 
         setTextColor(styledAttributes.textColor);
         setTextSize(styledAttributes.textSize);
@@ -180,6 +185,7 @@ public class TickerView extends View {
         float shadowRadius;
         int textColor;
         float textSize;
+        int textStyle;
 
         StyledAttributes(Resources res) {
             textColor = DEFAULT_TEXT_COLOR;
@@ -198,6 +204,7 @@ public class TickerView extends View {
                     shadowRadius);
             textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
             textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
+            textStyle = arr.getInt(R.styleable.ticker_TickerView_android_textStyle, textStyle);
         }
     }
 
@@ -338,6 +345,14 @@ public class TickerView extends View {
      * @param typeface the typeface to use on the text.
      */
     public void setTypeface(Typeface typeface) {
+        if (textStyle == Typeface.BOLD_ITALIC) {
+            typeface = Typeface.create(typeface, Typeface.BOLD_ITALIC);
+        } else if (textStyle == Typeface.BOLD) {
+            typeface = Typeface.create(typeface, Typeface.BOLD);
+        } else if (textStyle == Typeface.ITALIC) {
+            typeface = Typeface.create(typeface, Typeface.ITALIC);
+        }
+
         textPaint.setTypeface(typeface);
         onTextPaintMeasurementChanged();
     }
