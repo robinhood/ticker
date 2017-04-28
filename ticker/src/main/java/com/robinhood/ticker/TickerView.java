@@ -152,7 +152,7 @@ public class TickerView extends View {
         }
         if (styledAttributes.textStyle != 0) {
             textStyle = styledAttributes.textStyle;
-            setTypeface(Typeface.DEFAULT);
+            setTypeface(textPaint.getTypeface());
         }
 
         setTextColor(styledAttributes.textColor);
