@@ -1,3 +1,9 @@
+Version 1.2.0 *(2017-04-28)*
+----------------------------
+* Add support for textStyle and text shadow attributes.
+* Fix levenshtein bug that caused characters to disappear in animations.
+* Update gradle dependencies
+
 Version 1.1.1 *(2016-11-08)*
 ----------------------------
 * Add minimum support for arbitrary characters.

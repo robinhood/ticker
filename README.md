@@ -22,7 +22,7 @@ Getting started
 Add the ticker dependency to your `build.gradle`.
 
 ```groovy
-compile 'com.robinhood.ticker:ticker:1.1.1'
+compile 'com.robinhood.ticker:ticker:1.2.0'
 ```
 
 
@@ -75,8 +75,8 @@ tickerView.setAnimationInterpolator(new OvershootInterpolator());
 tickerView.setGravity(Gravity.START);
 ```
 
-Note that you can also specify `android:textColor` and `android:textSize` attributes using
-`android:textAppearance` and provide it with an appropriate style.
+For the full list of XML attributes that we support, please refer to the 
+[attrs](https://github.com/robinhood/ticker/blob/master/ticker/src/main/res/values/attrs.xml) file.
 
 
 Performance
