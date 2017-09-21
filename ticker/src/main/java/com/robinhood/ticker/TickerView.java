@@ -255,7 +255,7 @@ public class TickerView extends View {
      * @param text the text to display.
      */
     public void setText(String text) {
-        setText(text, columnManager.getCurrentWidth() > 0);
+        setText(text, this.text != null && !this.text.isEmpty());
     }
 
     /**
