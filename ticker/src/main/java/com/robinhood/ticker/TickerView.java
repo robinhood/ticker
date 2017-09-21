@@ -72,6 +72,8 @@ public class TickerView extends View {
     // Minor optimizations for re-positioning the canvas for the composer.
     private final Rect viewBounds = new Rect();
 
+    private String text;
+
     private int lastMeasuredDesiredWidth, lastMeasuredDesiredHeight;
 
     // View attributes, defaults are set in init().
@@ -264,6 +266,7 @@ public class TickerView extends View {
      * @param animate whether to animate to text.
      */
     public synchronized void setText(String text, boolean animate) {
+        this.text = text;
         final char[] targetText = text == null ? new char[0] : text.toCharArray();
 
         if (columnManager.shouldDebounceText(targetText)) {
@@ -288,6 +291,16 @@ public class TickerView extends View {
             checkForRelayout();
             invalidate();
         }
+    }
+
+    /**
+     * Get the last set text on the view. This does not equate to the current shown text on the
+     * UI because the animation might not have started or finished yet.
+     *
+     * @return last set text on this view.
+     */
+    public String getText() {
+        return text;
     }
 
     /**
