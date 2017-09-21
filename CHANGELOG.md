@@ -1,3 +1,8 @@
+Version 1.2.1 *(2017-09-20)*
+----------------------------
+* Add support for `getText()`.
+* Add support for `android:text` and `app:ticker_defaultCharacterList`.
+
 Version 1.2.0 *(2017-04-28)*
 ----------------------------
 * Add support for textStyle and text shadow attributes.
