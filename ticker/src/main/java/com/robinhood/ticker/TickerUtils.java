@@ -56,13 +56,14 @@ public class TickerUtils {
     }
 
     /**
-     * @return a default ordering for numbers (including periods).
+     * @return a default ordering for numbers.
      */
     public static char[] getDefaultNumberList() {
-        final char[] charList = new char[11];
+        final char[] charList = new char[12];
         charList[0] = EMPTY_CHAR;
+        charList[1] = (int) '.';
         for (int i = 0; i < 10; i++) {
-            charList[i + 1] = (char) (i + 48);
+            charList[i + 2] = (char) (i + 48);
         }
         return charList;
     }

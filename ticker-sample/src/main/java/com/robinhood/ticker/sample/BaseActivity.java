@@ -15,7 +15,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         resumed = true;
-        handler.post(createRunnable());
+        handler.postDelayed(createRunnable(), 1000);
     }
 
     private Runnable createRunnable() {

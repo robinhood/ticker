@@ -10,8 +10,6 @@ import com.robinhood.ticker.TickerView;
 import java.util.Random;
 
 public class MainActivity extends BaseActivity {
-    private static final char[] NUMBER_LIST = TickerUtils.getDefaultNumberList();
-    private static final char[] CURRENCY_LIST = TickerUtils.getDefaultListForUSCurrency();
     private char[] alphabetlist;
 
     private TickerView ticker1, ticker2, ticker3;
@@ -30,12 +28,11 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        ticker1 = (TickerView) findViewById(R.id.ticker1);
-        ticker2 = (TickerView) findViewById(R.id.ticker2);
-        ticker3 = (TickerView) findViewById(R.id.ticker3);
+        ticker1 = findViewById(R.id.ticker1);
+        ticker2 = findViewById(R.id.ticker2);
+        ticker3 = findViewById(R.id.ticker3);
 
-        ticker1.setCharacterList(NUMBER_LIST);
-        ticker2.setCharacterList(CURRENCY_LIST);
+        ticker2.setCharacterList(TickerUtils.getDefaultListForUSCurrency());
         ticker3.setCharacterList(alphabetlist);
 
         findViewById(R.id.perfBtn).setOnClickListener(new View.OnClickListener() {
