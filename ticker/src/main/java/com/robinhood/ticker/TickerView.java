@@ -160,6 +160,18 @@ public class TickerView extends View {
         setTextColor(styledAttributes.textColor);
         setTextSize(styledAttributes.textSize);
 
+        final int defaultCharList =
+                arr.getInt(R.styleable.ticker_TickerView_ticker_defaultCharacterList, 0);
+        switch (defaultCharList) {
+            case 1:
+                setCharacterList(TickerUtils.getDefaultListForUSCurrency());
+                break;
+            case 2:
+                setCharacterList(TickerUtils.getDefaultNumberList());
+                break;
+        }
+        setText(styledAttributes.text, false);
+
         arr.recycle();
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -185,6 +197,7 @@ public class TickerView extends View {
         float shadowDx;
         float shadowDy;
         float shadowRadius;
+        String text;
         int textColor;
         float textSize;
         int textStyle;
@@ -204,6 +217,7 @@ public class TickerView extends View {
             shadowDy = arr.getFloat(R.styleable.ticker_TickerView_android_shadowDy, shadowDy);
             shadowRadius = arr.getFloat(R.styleable.ticker_TickerView_android_shadowRadius,
                     shadowRadius);
+            text = arr.getString(R.styleable.ticker_TickerView_android_text);
             textColor = arr.getColor(R.styleable.ticker_TickerView_android_textColor, textColor);
             textSize = arr.getDimension(R.styleable.ticker_TickerView_android_textSize, textSize);
             textStyle = arr.getInt(R.styleable.ticker_TickerView_android_textStyle, textStyle);

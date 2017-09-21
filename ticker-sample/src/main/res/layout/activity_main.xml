@@ -15,9 +15,11 @@
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="2"
+        android:text="1234567"
         android:textColor="?colorPrimary"
         android:textSize="50sp"
-        app:ticker_animationDuration="500" />
+        app:ticker_animationDuration="500"
+        app:ticker_defaultCharacterList="number" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker2"

@@ -24,7 +24,7 @@ public class PerfActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perf);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new TestAdapter());
@@ -64,12 +64,12 @@ public class PerfActivity extends BaseActivity {
     private class TickerViewHolder extends RecyclerView.ViewHolder {
         private TickerView ticker1, ticker2, ticker3, ticker4;
 
-        public TickerViewHolder(View itemView) {
+        TickerViewHolder(View itemView) {
             super(itemView);
-            ticker1 = (TickerView) itemView.findViewById(R.id.ticker1);
-            ticker2 = (TickerView) itemView.findViewById(R.id.ticker2);
-            ticker3 = (TickerView) itemView.findViewById(R.id.ticker3);
-            ticker4 = (TickerView) itemView.findViewById(R.id.ticker4);
+            ticker1 = itemView.findViewById(R.id.ticker1);
+            ticker2 = itemView.findViewById(R.id.ticker2);
+            ticker3 = itemView.findViewById(R.id.ticker3);
+            ticker4 = itemView.findViewById(R.id.ticker4);
 
             ticker1.setCharacterList(CHAR_LIST);
             ticker2.setCharacterList(CHAR_LIST);
@@ -77,7 +77,7 @@ public class PerfActivity extends BaseActivity {
             ticker4.setCharacterList(CHAR_LIST);
         }
 
-        public void update(boolean animate) {
+        void update(boolean animate) {
             ticker1.setText(getRandomNumber(8), animate);
             ticker2.setText(getRandomNumber(8), animate);
             ticker3.setText(getRandomNumber(8), animate);
