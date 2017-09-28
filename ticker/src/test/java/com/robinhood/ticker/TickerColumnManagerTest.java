@@ -6,8 +6,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyChar;
 import static org.mockito.Mockito.when;
 
@@ -70,13 +68,6 @@ public class TickerColumnManagerTest {
         assertEquals('9', tickerColumnAtIndex(0).getTargetChar());
         assertEquals('9', tickerColumnAtIndex(1).getTargetChar());
         assertEquals('9', tickerColumnAtIndex(2).getTargetChar());
-    }
-
-    @Test
-    public void test_shouldDebounce() {
-        tickerColumnManager.setText("1234".toCharArray());
-        assertTrue(tickerColumnManager.shouldDebounceText("1234".toCharArray()));
-        assertFalse(tickerColumnManager.shouldDebounceText("12345".toCharArray()));
     }
 
     private TickerColumn tickerColumnAtIndex(int index) {
