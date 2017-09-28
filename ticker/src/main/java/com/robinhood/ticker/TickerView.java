@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -280,7 +281,7 @@ public class TickerView extends View {
      * @param animate whether to animate to text.
      */
     public synchronized void setText(String text, boolean animate) {
-        if (text.equals(this.text)) {
+        if (TextUtils.equals(text, this.text)) {
             return;
         }
 
