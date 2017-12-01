@@ -103,10 +103,12 @@ class TickerColumn {
     }
 
     float getCurrentWidth() {
+        checkForDrawMetricsChanges();
         return currentWidth;
     }
 
     float getMinimumRequiredWidth() {
+        checkForDrawMetricsChanges();
         return minimumRequiredWidth;
     }
 
@@ -122,7 +124,17 @@ class TickerColumn {
     }
 
     void onAnimationEnd() {
+        checkForDrawMetricsChanges();
         minimumRequiredWidth = currentWidth;
+    }
+
+    private void checkForDrawMetricsChanges() {
+        final float currentTargetWidth = metrics.getCharWidth(targetChar);
+        // Only resize due to DrawMetrics changes when we are done with whatever animation we
+        // are running.
+        if (currentWidth == targetWidth && targetWidth != currentTargetWidth) {
+            this.minimumRequiredWidth = this.currentWidth = this.targetWidth = currentTargetWidth;
+        }
     }
 
     void setAnimationProgress(float animationProgress) {
