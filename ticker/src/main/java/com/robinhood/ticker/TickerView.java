@@ -170,6 +170,10 @@ public class TickerView extends View {
             case 2:
                 setCharacterList(TickerUtils.getDefaultNumberList());
                 break;
+            default:
+                if (isInEditMode()) {
+                    setCharacterList(TickerUtils.getDefaultListForUSCurrency());
+                }
         }
         setText(styledAttributes.text, false);
 

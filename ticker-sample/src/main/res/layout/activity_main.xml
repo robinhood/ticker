@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <com.robinhood.ticker.TickerView
@@ -29,7 +30,8 @@
         android:padding="@dimen/activity_vertical_margin"
         android:textAppearance="@style/TickerTextAppearance"
         android:textStyle="bold"
-        app:ticker_animationDuration="500" />
+        app:ticker_animationDuration="500"
+        tools:text="$123.45" />
 
     <com.robinhood.ticker.TickerView
         android:id="@+id/ticker3"
