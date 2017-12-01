@@ -192,6 +192,7 @@ public class TickerView extends View {
             public void onAnimationEnd(Animator animation) {
                 columnManager.onAnimationEnd();
                 checkForRelayout();
+                invalidate();
             }
         });
     }
