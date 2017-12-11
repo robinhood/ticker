@@ -1,3 +1,9 @@
+Version 1.2.2 *(2017-12-11)*
+----------------------------
+* Fix bug where ticker column size doesn't change after text size change.
+* Fix debounce bug when setting the same text on ticker.
+* Support `tools:text`.
+
 Version 1.2.1 *(2017-09-20)*
 ----------------------------
 * Add support for `getText()`.
