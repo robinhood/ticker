@@ -31,6 +31,7 @@
         android:textAppearance="@style/TickerTextAppearance"
         android:textStyle="bold"
         app:ticker_animationDuration="500"
+        app:ticker_defaultCharacterList="number"
         tools:text="$123.45" />
 
     <com.robinhood.ticker.TickerView
@@ -40,7 +41,8 @@
         android:gravity="center"
         android:padding="@dimen/activity_vertical_margin"
         android:textAppearance="@style/TickerTextAppearance"
-        app:ticker_animationDuration="500" />
+        app:ticker_animationDuration="500"
+        app:ticker_defaultCharacterList="alphabet" />
 
     <Button
         android:id="@+id/perfBtn"

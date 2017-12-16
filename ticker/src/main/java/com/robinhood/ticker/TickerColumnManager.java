@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 Robinhood Markets, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,10 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * In ticker, each character in the rendered text is represented by a {@link TickerColumn}. The
@@ -36,24 +39,39 @@ class TickerColumnManager {
     final ArrayList<TickerColumn> tickerColumns = new ArrayList<>();
     private final TickerDrawMetrics metrics;
 
-    // The character list that dictates how to transition from one character to another.
-    private char[] characterList;
+    private List<char[]> characterLists;
     // A minor optimization so that we can cache the indices of each character.
-    private Map<Character, Integer> characterIndicesMap;
+    private List<Map<Character, Integer>> characterIndicesMaps;
+    private Set<Character> supportedCharacters;
 
     TickerColumnManager(TickerDrawMetrics metrics) {
         this.metrics = metrics;
     }
 
     /**
-     * @see {@link TickerView#setCharacterList(char[])}.
+     * @inheritDoc TickerView#setCharacterLists
      */
-    void setCharacterList(char[] characterList) {
-        this.characterList = characterList;
-        this.characterIndicesMap = new HashMap<>(characterList.length);
+    void setCharacterLists(char[]... characterLists) {
+        this.characterLists = new ArrayList<>(characterLists.length);
+        this.supportedCharacters = new HashSet<>();
+        for (char[] characterList : characterLists) {
+            final char[] modifiedCharacterList = new char[characterList.length + 1];
+            modifiedCharacterList[0] = TickerUtils.EMPTY_CHAR;
+            System.arraycopy(characterList, 0, modifiedCharacterList, 1, characterList.length);
+            this.characterLists.add(modifiedCharacterList);
 
-        for (int i = 0; i < characterList.length; i++) {
-            characterIndicesMap.put(characterList[i], i);
+            for (char c : modifiedCharacterList) {
+                supportedCharacters.add(c);
+            }
+        }
+
+        this.characterIndicesMaps = new ArrayList<>(this.characterLists.size());
+        for (char[] characterList : this.characterLists) {
+            final Map<Character, Integer> indexMap = new HashMap<>(characterList.length);
+            for (int i = 0; i < characterList.length; i++) {
+                indexMap.put(characterList[i], i);
+            }
+            characterIndicesMaps.add(indexMap);
         }
     }
 
@@ -61,8 +79,8 @@ class TickerColumnManager {
      * Tell the column manager the new target text that it should display.
      */
     void setText(char[] text) {
-        if (characterList == null) {
-            throw new IllegalStateException("Need to call setCharacterList(char[]) first.");
+        if (characterLists == null) {
+            throw new IllegalStateException("Need to call setCharacterLists(char[]...) first.");
         }
 
         // First remove any zero-width columns
@@ -76,14 +94,17 @@ class TickerColumnManager {
         }
 
         // Use Levenshtein distance algorithm to figure out how to manipulate the columns
-        final int[] actions = LevenshteinUtils.computeColumnActions(getCurrentText(), text);
+        final int[] actions = LevenshteinUtils.computeColumnActions(
+                getCurrentText(), text, supportedCharacters
+        );
         int columnIndex = 0;
         int textIndex = 0;
-        for (int i = 0; i < actions.length; i++) {
-            switch (actions[i]) {
+        for (int action : actions) {
+            switch (action) {
                 case LevenshteinUtils.ACTION_INSERT:
                     tickerColumns.add(columnIndex,
-                            new TickerColumn(characterList, characterIndicesMap, metrics));
+                            new TickerColumn(characterLists, characterIndicesMaps, metrics));
+                    // Intentional fallthrough
                 case LevenshteinUtils.ACTION_SAME:
                     tickerColumns.get(columnIndex).setTargetChar(text[textIndex]);
                     columnIndex++;
@@ -94,7 +115,7 @@ class TickerColumnManager {
                     columnIndex++;
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown action: " + actions[i]);
+                    throw new IllegalArgumentException("Unknown action: " + action);
             }
         }
     }

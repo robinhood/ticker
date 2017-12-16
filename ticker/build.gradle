@@ -14,7 +14,7 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.10.0'
+    testImplementation 'org.mockito:mockito-core:2.12.0'
 }
 
 apply from: './gradle-mvn-push.gradle'
