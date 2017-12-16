@@ -10,7 +10,7 @@ import com.robinhood.ticker.TickerView;
 import java.util.Random;
 
 public class MainActivity extends BaseActivity {
-    private char[] alphabetlist;
+    private final char[] alphabetlist = TickerUtils.provideAlphabeticalList();
 
     private TickerView ticker1, ticker2, ticker3;
 
@@ -19,21 +19,9 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        alphabetlist = new char[53];
-        alphabetlist[0] = TickerUtils.EMPTY_CHAR;
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 26; j++) {
-                // Add all lowercase characters first, then add the uppercase characters.
-                alphabetlist[1 + i * 26 + j] = (char) ((i == 0) ? j + 97 : j + 65);
-            }
-        }
-
         ticker1 = findViewById(R.id.ticker1);
         ticker2 = findViewById(R.id.ticker2);
         ticker3 = findViewById(R.id.ticker3);
-
-        ticker2.setCharacterList(TickerUtils.getDefaultListForUSCurrency());
-        ticker3.setCharacterList(alphabetlist);
 
         findViewById(R.id.perfBtn).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -8,15 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.robinhood.ticker.TickerUtils;
 import com.robinhood.ticker.TickerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PerfActivity extends BaseActivity {
-    private static final char[] CHAR_LIST = TickerUtils.getDefaultNumberList();
-
     private final List<TickerViewHolder> boundViewHolders = new ArrayList<>();
 
     @Override
@@ -70,11 +67,6 @@ public class PerfActivity extends BaseActivity {
             ticker2 = itemView.findViewById(R.id.ticker2);
             ticker3 = itemView.findViewById(R.id.ticker3);
             ticker4 = itemView.findViewById(R.id.ticker4);
-
-            ticker1.setCharacterList(CHAR_LIST);
-            ticker2.setCharacterList(CHAR_LIST);
-            ticker3.setCharacterList(CHAR_LIST);
-            ticker4.setCharacterList(CHAR_LIST);
         }
 
         void update(boolean animate) {

@@ -1,17 +1,17 @@
-/**
- * Copyright (C) 2016 Robinhood Markets, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+  Copyright (C) 2016 Robinhood Markets, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
  */
 
 package com.robinhood.ticker;
@@ -41,7 +41,7 @@ import android.view.animation.Interpolator;
 /**
  * The primary view for showing a ticker text view that handles smoothly scrolling from the
  * current text to a given text. The scrolling behavior is defined by
- * {@link #setCharacterList(char[])} which dictates what characters come in between the starting
+ * {@link #setCharacterLists} which dictates what characters come in between the starting
  * and ending characters.
  *
  * <p>This class primarily handles the drawing customization of the ticker view, for example
@@ -165,16 +165,17 @@ public class TickerView extends View {
                 arr.getInt(R.styleable.TickerView_ticker_defaultCharacterList, 0);
         switch (defaultCharList) {
             case 1:
-                setCharacterList(TickerUtils.getDefaultListForUSCurrency());
+                setCharacterLists(TickerUtils.provideNumberList());
                 break;
             case 2:
-                setCharacterList(TickerUtils.getDefaultNumberList());
+                setCharacterLists(TickerUtils.provideAlphabeticalList());
                 break;
             default:
                 if (isInEditMode()) {
-                    setCharacterList(TickerUtils.getDefaultListForUSCurrency());
+                    setCharacterLists(TickerUtils.provideNumberList());
                 }
         }
+
         setText(styledAttributes.text, false);
 
         arr.recycle();
@@ -243,28 +244,16 @@ public class TickerView extends View {
      * it will know that it has to go from 'd' to 'c' to 'b' to 'a', and these are the characters
      * that show up during the animation scroll.
      *
+     * <p>We allow for multiple character lists, and the character lists will be prioritized with
+     * latter lists given a higher priority than the previous lists. e.g. given [1,2,3] and [1,3],
+     * an animation from 1 to 3 will use the sequence [1,3] rather than [1,2,3].
+     *
      * <p>You can find some helpful character list generators in {@link TickerUtils}.
      *
-     * <p>Special note: the character list must contain {@link TickerUtils#EMPTY_CHAR} because the
-     * ticker needs to know how to animate from empty to another character (e.g. when the length
-     * of the string changes).
-     *
-     * @param characterList the character array that dictates character orderings.
+     * @param characterLists the list of character array that dictates character orderings.
      */
-    public void setCharacterList(char[] characterList) {
-        boolean foundEmpty = false;
-        for (char character : characterList) {
-            if (character == TickerUtils.EMPTY_CHAR) {
-                foundEmpty = true;
-                break;
-            }
-        }
-
-        if (!foundEmpty) {
-            throw new IllegalArgumentException("Missing TickerUtils#EMPTY_CHAR in character list");
-        }
-
-        columnManager.setCharacterList(characterList);
+    public void setCharacterLists(char[]... characterLists) {
+        columnManager.setCharacterLists(characterLists);
     }
 
     /**
