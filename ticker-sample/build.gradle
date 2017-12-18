@@ -16,7 +16,4 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-
-    implementation 'io.reactivex:rxjava:1.3.0'
-    implementation 'io.reactivex:rxandroid:1.2.1'
 }
