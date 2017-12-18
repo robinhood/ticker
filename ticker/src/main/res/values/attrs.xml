@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <declare-styleable name="ticker_TickerView">
+    <declare-styleable name="TickerView">
         <attr name="ticker_animationDuration" format="reference|integer" />
         <attr name="ticker_animateMeasurementChange" format="reference|boolean" />
         <attr name="ticker_defaultCharacterList" format="enum">
