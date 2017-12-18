@@ -285,7 +285,7 @@ public class TickerView extends View {
      * @param text the text to display.
      * @param animate whether to animate to text.
      */
-    public synchronized void setText(String text, boolean animate) {
+    public void setText(String text, boolean animate) {
         if (TextUtils.equals(text, this.text)) {
             return;
         }
