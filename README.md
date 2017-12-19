@@ -22,7 +22,7 @@ Getting started
 Add the ticker dependency to your `build.gradle`.
 
 ```groovy
-compile 'com.robinhood.ticker:ticker:1.2.2'
+implementation 'com.robinhood.ticker:ticker:1.2.2'
 ```
 
 
