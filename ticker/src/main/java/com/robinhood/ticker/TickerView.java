@@ -528,35 +528,11 @@ public class TickerView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int desiredWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int desiredHeight = MeasureSpec.getSize(heightMeasureSpec);
-
         lastMeasuredDesiredWidth = computeDesiredWidth();
         lastMeasuredDesiredHeight = computeDesiredHeight();
 
-        switch (widthMode) {
-            case MeasureSpec.EXACTLY:
-                break;
-            case MeasureSpec.AT_MOST:
-                desiredWidth = Math.min(desiredWidth, lastMeasuredDesiredWidth);
-                break;
-            case MeasureSpec.UNSPECIFIED:
-                desiredWidth = lastMeasuredDesiredWidth;
-                break;
-        }
-
-        switch (heightMode) {
-            case MeasureSpec.EXACTLY:
-                break;
-            case MeasureSpec.AT_MOST:
-                desiredHeight = Math.min(desiredHeight, lastMeasuredDesiredHeight);
-                break;
-            case MeasureSpec.UNSPECIFIED:
-                desiredHeight = lastMeasuredDesiredHeight;
-                break;
-        }
+        int desiredWidth = resolveSize(lastMeasuredDesiredWidth, widthMeasureSpec);
+        int desiredHeight = resolveSize(lastMeasuredDesiredHeight, heightMeasureSpec);
 
         setMeasuredDimension(desiredWidth, desiredHeight);
     }
