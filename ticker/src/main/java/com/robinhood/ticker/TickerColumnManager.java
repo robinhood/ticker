@@ -35,6 +35,7 @@ import java.util.Set;
  *
  * @author Jin Cao, Robinhood
  */
+@SuppressWarnings("ForLoopReplaceableByForEach")
 class TickerColumnManager {
     final ArrayList<TickerColumn> tickerColumns = new ArrayList<>();
     private final TickerDrawMetrics metrics;
@@ -53,22 +54,21 @@ class TickerColumnManager {
      */
     void setCharacterLists(String... characterLists) {
         this.characterLists = new ArrayList<>(characterLists.length);
+        this.characterIndicesMaps = new ArrayList<>(characterLists.length);
         this.supportedCharacters = new HashSet<>();
-        for (String characterList : characterLists) {
+        for (int i = 0; i < characterLists.length; i++) {
+            final String characterList = characterLists[i];
             final char[] modifiedCharacterList =
                     (TickerUtils.EMPTY_CHAR + characterList).toCharArray();
             this.characterLists.add(modifiedCharacterList);
 
-            for (char c : modifiedCharacterList) {
-                supportedCharacters.add(c);
+            for (int j = 0; j < modifiedCharacterList.length; j++) {
+                supportedCharacters.add(modifiedCharacterList[j]);
             }
-        }
 
-        this.characterIndicesMaps = new ArrayList<>(this.characterLists.size());
-        for (char[] characterList : this.characterLists) {
-            final Map<Character, Integer> indexMap = new HashMap<>(characterList.length);
-            for (int i = 0; i < characterList.length; i++) {
-                indexMap.put(characterList[i], i);
+            final Map<Character, Integer> indexMap = new HashMap<>(modifiedCharacterList.length);
+            for (int j = 0; j < modifiedCharacterList.length; j++) {
+                indexMap.put(modifiedCharacterList[j], j);
             }
             characterIndicesMaps.add(indexMap);
         }
