@@ -237,22 +237,22 @@ public class TickerView extends View {
 
     /**
      * This is the primary API that the view uses to determine how to animate from one character
-     * to another. The provided character array dictates what characters will appear between
+     * to another. The provided strings dictates what characters will appear between
      * the start and end characters.
      *
-     * <p>For example, given the list [a,b,c,d,e], if the view wants to animate from 'd' to 'a',
+     * <p>For example, given the string "abcde", if the view wants to animate from 'd' to 'a',
      * it will know that it has to go from 'd' to 'c' to 'b' to 'a', and these are the characters
      * that show up during the animation scroll.
      *
      * <p>We allow for multiple character lists, and the character lists will be prioritized with
-     * latter lists given a higher priority than the previous lists. e.g. given [1,2,3] and [1,3],
+     * latter lists given a higher priority than the previous lists. e.g. given "123" and "13",
      * an animation from 1 to 3 will use the sequence [1,3] rather than [1,2,3].
      *
      * <p>You can find some helpful character list generators in {@link TickerUtils}.
      *
-     * @param characterLists the list of character array that dictates character orderings.
+     * @param characterLists the list of strings that dictates character orderings.
      */
-    public void setCharacterLists(char[]... characterLists) {
+    public void setCharacterLists(String... characterLists) {
         columnManager.setCharacterLists(characterLists);
     }
 

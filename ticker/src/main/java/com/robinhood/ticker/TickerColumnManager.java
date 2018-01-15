@@ -51,13 +51,12 @@ class TickerColumnManager {
     /**
      * @inheritDoc TickerView#setCharacterLists
      */
-    void setCharacterLists(char[]... characterLists) {
+    void setCharacterLists(String... characterLists) {
         this.characterLists = new ArrayList<>(characterLists.length);
         this.supportedCharacters = new HashSet<>();
-        for (char[] characterList : characterLists) {
-            final char[] modifiedCharacterList = new char[characterList.length + 1];
-            modifiedCharacterList[0] = TickerUtils.EMPTY_CHAR;
-            System.arraycopy(characterList, 0, modifiedCharacterList, 1, characterList.length);
+        for (String characterList : characterLists) {
+            final char[] modifiedCharacterList =
+                    (TickerUtils.EMPTY_CHAR + characterList).toCharArray();
             this.characterLists.add(modifiedCharacterList);
 
             for (char c : modifiedCharacterList) {
@@ -99,8 +98,8 @@ class TickerColumnManager {
         );
         int columnIndex = 0;
         int textIndex = 0;
-        for (int action : actions) {
-            switch (action) {
+        for (int i = 0; i < actions.length; i++) {
+            switch (actions[i]) {
                 case LevenshteinUtils.ACTION_INSERT:
                     tickerColumns.add(columnIndex,
                             new TickerColumn(characterLists, characterIndicesMaps, metrics));
@@ -115,7 +114,7 @@ class TickerColumnManager {
                     columnIndex++;
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown action: " + action);
+                    throw new IllegalArgumentException("Unknown action: " + actions[i]);
             }
         }
     }
