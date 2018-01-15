@@ -17,7 +17,6 @@
 package com.robinhood.ticker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -31,21 +30,26 @@ public class LevenshteinUtils {
     static final int ACTION_DELETE = 2;
 
     /**
-     * This is a wrapper function around {@link #computeColumnActionsForSegment} that
+     * This is a wrapper function around {@link #appendColumnActionsForSegment} that
      * additionally takes in supportedCharacters. It uses supportedCharacters to compute whether
      * the current character should be animated or if it should remain in-place.
      *
-     * For specific implementation details, see {@link #computeColumnActionsForSegment}.
+     * For specific implementation details, see {@link #appendColumnActionsForSegment}.
      *
+     * @param source the source char array to animate from
+     * @param target the target char array to animate to
      * @param supportedCharacters all characters that support custom animation.
+     * @return an int array of size min(source.length, target.length) where each index
+     *         corresponds to one of {@link #ACTION_SAME}, {@link #ACTION_INSERT},
+     *         {@link #ACTION_DELETE} to represent if we update, insert, or delete a character
+     *         at the particular index.
      */
     public static int[] computeColumnActions(char[] source, char[] target,
             Set<Character> supportedCharacters) {
         int sourceIndex = 0;
         int targetIndex = 0;
 
-        List<int[]> columnActions = new ArrayList<>();
-        int totalNumActions = 0;
+        List<Integer> columnActions = new ArrayList<>();
         while (true) {
             // Check for terminating conditions
             final boolean reachedEndOfSource = sourceIndex == source.length;
@@ -53,16 +57,10 @@ public class LevenshteinUtils {
             if (reachedEndOfSource && reachedEndOfTarget) {
                 break;
             } else if (reachedEndOfSource) {
-                final int[] remainingActions = new int[target.length - targetIndex];
-                Arrays.fill(remainingActions, ACTION_INSERT);
-                columnActions.add(remainingActions);
-                totalNumActions += remainingActions.length;
+                fillWithActions(columnActions, target.length - targetIndex, ACTION_INSERT);
                 break;
             } else if (reachedEndOfTarget) {
-                final int[] remainingActions = new int[source.length - sourceIndex];
-                Arrays.fill(remainingActions, ACTION_DELETE);
-                columnActions.add(remainingActions);
-                totalNumActions += remainingActions.length;
+                fillWithActions(columnActions, source.length - sourceIndex, ACTION_DELETE);
                 break;
             }
 
@@ -75,51 +73,56 @@ public class LevenshteinUtils {
                         findNextUnsupportedChar(source, sourceIndex + 1, supportedCharacters);
                 final int targetEndIndex =
                         findNextUnsupportedChar(target, targetIndex + 1, supportedCharacters);
-                final int[] columnActionsForSegment = computeColumnActionsForSegment(
-                        source, target, sourceIndex, sourceEndIndex, targetIndex, targetEndIndex
+
+                appendColumnActionsForSegment(
+                        columnActions,
+                        source,
+                        target,
+                        sourceIndex,
+                        sourceEndIndex,
+                        targetIndex,
+                        targetEndIndex
                 );
-                columnActions.add(columnActionsForSegment);
-                totalNumActions += columnActionsForSegment.length;
                 sourceIndex = sourceEndIndex;
                 targetIndex = targetEndIndex;
             } else if (containsSourceChar) {
                 // We are animating in a target character that isn't supported
-                columnActions.add(new int[] { ACTION_INSERT });
-                totalNumActions++;
+                columnActions.add(ACTION_INSERT);
                 targetIndex++;
             } else if (containsTargetChar) {
                 // We are animating out a source character that isn't supported
-                columnActions.add(new int[] { ACTION_DELETE });
-                totalNumActions++;
+                columnActions.add(ACTION_DELETE);
                 sourceIndex++;
             } else {
                 // Both characters are not supported, perform default animation to replace
-                columnActions.add(new int[] { ACTION_SAME });
-                totalNumActions++;
+                columnActions.add(ACTION_SAME);
                 sourceIndex++;
                 targetIndex++;
             }
         }
 
         // Concat all of the actions into one array
-        final int[] result = new int[totalNumActions];
-        int index = 0;
-        for (int[] actions : columnActions) {
-            System.arraycopy(actions, 0, result, index, actions.length);
-            index += actions.length;
+        final int[] result = new int[columnActions.size()];
+        for (int i = 0; i < columnActions.size(); i++) {
+            result[i] = columnActions.get(i);
         }
         return result;
     }
 
     private static int findNextUnsupportedChar(char[] chars, int startIndex,
             Set<Character> supportedCharacters) {
-        while (startIndex < chars.length) {
-            if (!supportedCharacters.contains(chars[startIndex])) {
-                break;
+        for (int i = startIndex; i < chars.length; i++) {
+            if (!supportedCharacters.contains(chars[i])) {
+                return i;
             }
-            startIndex++;
         }
-        return startIndex;
+        return chars.length;
+    }
+
+    private static void fillWithActions(List<Integer> actions, int num, int action) {
+        for (int i = 0; i < num; i++) {
+            actions.add(action);
+        }
     }
 
     /**
@@ -128,27 +131,31 @@ public class LevenshteinUtils {
      * Unlike the traditional algorithm, we force return all {@link #ACTION_SAME} for inputs that
      * are the same length (so optimize update over insertion/deletion).
      *
+     * @param columnActions the target list to append actions into
      * @param source the source character array
      * @param target the target character array
      * @param sourceStart the start index of source to compute column actions (inclusive)
      * @param sourceEnd the end index of source to compute column actions (exclusive)
      * @param targetStart the start index of target to compute column actions (inclusive)
      * @param targetEnd the end index of target to compute column actions (exclusive)
-     * @return an int array of size min(source.length, target.length) where each index
-     *         corresponds to one of {@link #ACTION_SAME}, {@link #ACTION_INSERT},
-     *         {@link #ACTION_DELETE} to represent if we update, insert, or delete a character
-     *         at the particular index.
      */
-    private static int[] computeColumnActionsForSegment(char[] source, char[] target,
-            int sourceStart, int sourceEnd, int targetStart, int targetEnd) {
+    private static void appendColumnActionsForSegment(
+            List<Integer> columnActions,
+            char[] source,
+            char[] target,
+            int sourceStart,
+            int sourceEnd,
+            int targetStart,
+            int targetEnd
+    ) {
         final int sourceLength = sourceEnd - sourceStart;
         final int targetLength = targetEnd - targetStart;
         final int resultLength = Math.max(sourceLength, targetLength);
 
         if (sourceLength == targetLength) {
             // No modifications needed if the length of the strings are the same
-            // NOTE: this assumes that ACTION_SAME has the value of 0!
-            return new int[resultLength];
+            fillWithActions(columnActions, resultLength, ACTION_SAME);
+            return;
         }
 
         final int numRows = sourceLength + 1;
@@ -208,12 +215,11 @@ public class LevenshteinUtils {
             }
         }
 
+        // Reverse the actions to get the correct ordering
         final int resultSize = resultList.size();
-        final int[] result = new int[resultSize];
-        for (int i = 0; i < resultSize; i++) {
-            result[resultSize - 1 - i] = resultList.get(i);
+        for (int i = resultSize - 1; i >= 0; i--) {
+            columnActions.add(resultList.get(i));
         }
-        return result;
     }
 
     private static int min(int first, int second, int third) {

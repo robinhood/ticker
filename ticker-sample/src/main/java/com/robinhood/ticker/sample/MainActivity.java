@@ -10,7 +10,7 @@ import com.robinhood.ticker.TickerView;
 import java.util.Random;
 
 public class MainActivity extends BaseActivity {
-    private final char[] alphabetlist = TickerUtils.provideAlphabeticalList();
+    private final String alphabetlist = TickerUtils.provideAlphabeticalList();
 
     private TickerView ticker1, ticker2, ticker3;
 
@@ -41,10 +41,10 @@ public class MainActivity extends BaseActivity {
         ticker3.setText(generateChars(RANDOM, alphabetlist, digits));
     }
 
-    private String generateChars(Random random, char[] list, int numDigits) {
+    private String generateChars(Random random, String list, int numDigits) {
         final char[] result = new char[numDigits];
         for (int i = 0; i < numDigits; i++) {
-            result[i] = list[random.nextInt(list.length)];
+            result[i] = list.charAt(random.nextInt(list.length()));
         }
         return new String(result);
     }
