@@ -79,7 +79,7 @@ class TickerColumnManager {
      */
     void setText(char[] text) {
         if (characterLists == null) {
-            throw new IllegalStateException("Need to call setCharacterLists(char[]...) first.");
+            throw new IllegalStateException("Need to call #setCharacterLists first.");
         }
 
         // First remove any zero-width columns
