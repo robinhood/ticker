@@ -1,10 +1,24 @@
 package com.robinhood.ticker;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
 public class LevenshteinUtilsTest {
+    private Set<Character> numbers;
+
+    @Before
+    public void setup() {
+        numbers = new HashSet<>();
+        for (char c : "1234567890".toCharArray()) {
+            numbers.add(c);
+        }
+    }
+
     @Test
     public void test_insert1() {
         runTest("1111", "11211", "00100");
@@ -13,6 +27,11 @@ public class LevenshteinUtilsTest {
     @Test
     public void test_insert2() {
         runTest("123", "0213", "0010");
+    }
+
+    @Test
+    public void test_insert3() {
+        runTest("9", "10", "10");
     }
 
     @Test
@@ -49,19 +68,26 @@ public class LevenshteinUtilsTest {
     }
 
     @Test
-    public void test_currency1() {
+    public void test_computeWithUnsupportedChars1() {
         runTest("$123.99", "$1223.98", "00010000");
+    }
+
+    @Test
+    public void test_computeWithUnsupportedChars2() {
+        runTest("$1.0000", "$1000.0", "0011100222");
     }
 
     private void runTest(String source, String target, String actions) {
         final int[] result = LevenshteinUtils.computeColumnActions(
-                source.toCharArray(), target.toCharArray());
+                source.toCharArray(), target.toCharArray(), numbers);
+        assertEquals(actions, convertArrToString(result));
+    }
 
-        final StringBuilder resultActions = new StringBuilder(result.length);
-        for (int resultChar : result) {
-            resultActions.append(Integer.toString(resultChar));
+    private String convertArrToString(int[] arr) {
+        final StringBuilder result = new StringBuilder(arr.length);
+        for (int resultChar : arr) {
+            result.append(Integer.toString(resultChar));
         }
-
-        assertEquals(actions, resultActions.toString());
+        return result.toString();
     }
 }

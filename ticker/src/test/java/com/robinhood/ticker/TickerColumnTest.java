@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +45,11 @@ public class TickerColumnTest {
         when(metrics.getCharHeight()).thenReturn(CHAR_HEIGHT);
         when(metrics.getCharWidth(anyChar())).thenReturn(DEFAULT_CHAR_WIDTH);
         when(metrics.getCharWidth(TickerUtils.EMPTY_CHAR)).thenReturn(0f);
-        tickerColumn = new TickerColumn(charList, charMap, metrics);
+        tickerColumn = new TickerColumn(
+                Collections.singletonList(charList),
+                Collections.singletonList(charMap),
+                metrics
+        );
     }
 
     @Test

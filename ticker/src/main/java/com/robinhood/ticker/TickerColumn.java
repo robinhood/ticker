@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 Robinhood Markets, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package com.robinhood.ticker;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,11 +30,8 @@ import java.util.Map;
  * @author Jin Cao, Robinhood
  */
 class TickerColumn {
-    private static final int UNKNOWN_START_INDEX = -1;
-    private static final int UNKNOWN_END_INDEX = -2;
-
-    private final char[] characterList;
-    private final Map<Character, Integer> characterIndicesMap;
+    private final List<char[]> characterLists;
+    private final List<Map<Character, Integer>> characterIndicesMaps;
     private final TickerDrawMetrics metrics;
 
     private char currentChar = TickerUtils.EMPTY_CHAR;
@@ -42,6 +40,7 @@ class TickerColumn {
     // The indices characters simply signify what positions are for the current and target
     // characters in the assigned characterList. This tells us how to animate from the current
     // to the target characters.
+    private char[] currentCharacterList;
     private int startIndex;
     private int endIndex;
 
@@ -62,10 +61,10 @@ class TickerColumn {
     private float previousBottomDelta;
     private int directionAdjustment;
 
-    TickerColumn(char[] characterList, Map<Character, Integer> characterIndicesMap,
+    TickerColumn(List<char[]> characterLists, List<Map<Character, Integer>> characterIndicesMaps,
             TickerDrawMetrics metrics) {
-        this.characterList = characterList;
-        this.characterIndicesMap = characterIndicesMap;
+        this.characterLists = characterLists;
+        this.characterIndicesMaps = characterIndicesMaps;
         this.metrics = metrics;
     }
 
@@ -117,10 +116,31 @@ class TickerColumn {
      * current and target characters for the animation.
      */
     private void setCharacterIndices() {
-        startIndex = characterIndicesMap.containsKey(currentChar)
-                ? characterIndicesMap.get(currentChar) : UNKNOWN_START_INDEX;
-        endIndex = characterIndicesMap.containsKey(targetChar)
-                ? characterIndicesMap.get(targetChar) : UNKNOWN_END_INDEX;
+        currentCharacterList = null;
+
+        for (int i = 0; i < characterIndicesMaps.size(); i++) {
+            final Map<Character, Integer> characterIndicesMap = characterIndicesMaps.get(i);
+            if (characterIndicesMap.containsKey(currentChar) &&
+                    characterIndicesMap.containsKey(targetChar)) {
+                currentCharacterList = characterLists.get(i);
+                startIndex = characterIndicesMap.get(currentChar);
+                endIndex = characterIndicesMap.get(targetChar);
+                break;
+            }
+        }
+
+        // If we didn't find a list that contains both characters, just perform a default animation
+        // going straight from source to target
+        if (currentCharacterList == null) {
+            if (currentChar == targetChar) {
+                currentCharacterList = new char[] { currentChar };
+                startIndex = endIndex = 0;
+            } else {
+                currentCharacterList = new char[]{currentChar, targetChar};
+                startIndex = 0;
+                endIndex = 1;
+            }
+        }
     }
 
     void onAnimationEnd() {
@@ -195,40 +215,32 @@ class TickerColumn {
      * in the correct position on the canvas.
      */
     void draw(Canvas canvas, Paint textPaint) {
-        if (drawText(canvas, textPaint, characterList, bottomCharIndex, bottomDelta)) {
+        if (drawText(canvas, textPaint, currentCharacterList, bottomCharIndex, bottomDelta)) {
             // Save the current drawing state in case our animation gets interrupted
             if (bottomCharIndex >= 0) {
-                currentChar = characterList[bottomCharIndex];
-            } else if (bottomCharIndex == UNKNOWN_END_INDEX) {
-                currentChar = targetChar;
+                currentChar = currentCharacterList[bottomCharIndex];
             }
             currentBottomDelta = bottomDelta;
         }
 
         // Draw the corresponding top and bottom characters if applicable
-        drawText(canvas, textPaint, characterList, bottomCharIndex + 1,
+        drawText(canvas, textPaint, currentCharacterList, bottomCharIndex + 1,
                 bottomDelta - charHeight);
         // Drawing the bottom character here might seem counter-intuitive because we've been
         // computing for the bottom character this entire time. But the bottom character
         // computed above might actually be above the baseline if we interrupted a previous
         // animation that gave us a positive additionalDelta.
-        drawText(canvas, textPaint, characterList, bottomCharIndex - 1,
+        drawText(canvas, textPaint, currentCharacterList, bottomCharIndex - 1,
                 bottomDelta + charHeight);
     }
 
     /**
      * @return whether the text was successfully drawn on the canvas
      */
-    private boolean drawText(Canvas canvas, Paint textPaint, char[] characterList, int index,
-            float verticalOffset) {
+    private boolean drawText(Canvas canvas, Paint textPaint, char[] characterList,
+            int index, float verticalOffset) {
         if (index >= 0 && index < characterList.length) {
             canvas.drawText(characterList, index, 1, 0f, verticalOffset, textPaint);
-            return true;
-        } else if (startIndex == UNKNOWN_START_INDEX && index == UNKNOWN_START_INDEX) {
-            canvas.drawText(Character.toString(currentChar), 0, 1, 0f, verticalOffset, textPaint);
-            return true;
-        } else if (endIndex == UNKNOWN_END_INDEX && index == UNKNOWN_END_INDEX) {
-            canvas.drawText(Character.toString(targetChar), 0, 1, 0f, verticalOffset, textPaint);
             return true;
         }
         return false;
