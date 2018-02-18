@@ -73,7 +73,7 @@ class TickerColumn {
      * change can either be animated or instant depending on the animation progress set by
      * {@link #setAnimationProgress(float)}.
      */
-    void setTargetChar(char targetChar) {
+    void setTargetChar(char targetChar, boolean wraparound) {
         // Set the current and target characters for the animation
         this.targetChar = targetChar;
         this.sourceWidth = this.currentWidth;
@@ -81,7 +81,7 @@ class TickerColumn {
         this.minimumRequiredWidth = Math.max(this.sourceWidth, this.targetWidth);
 
         // Calculate the current indices
-        setCharacterIndices();
+        setCharacterIndices(wraparound);
 
         final boolean scrollDown = endIndex >= startIndex;
         directionAdjustment = scrollDown ? 1 : -1;
@@ -115,7 +115,7 @@ class TickerColumn {
      * A helper method for populating {@link #startIndex} and {@link #endIndex} given the
      * current and target characters for the animation.
      */
-    private void setCharacterIndices() {
+    private void setCharacterIndices(boolean wraparound) {
         currentCharacterList = null;
 
         for (int i = 0; i < characterIndicesMaps.size(); i++) {
@@ -136,10 +136,35 @@ class TickerColumn {
                 currentCharacterList = new char[] { currentChar };
                 startIndex = endIndex = 0;
             } else {
-                currentCharacterList = new char[]{currentChar, targetChar};
+                currentCharacterList = new char[] {currentChar, targetChar};
                 startIndex = 0;
                 endIndex = 1;
             }
+        } else if (wraparound && endIndex < startIndex) {
+            // Modify the current character list & indices to take wraparound into account
+            // NOTE(jin): Some hackery here to avoid copying over the empty character sigh
+            // TODO(jin) revisit this hackery for empty character
+            final boolean isEndingOnEmptyChar = endIndex == 0;
+            final int numFromStart = currentCharacterList.length - startIndex;
+            final int numToEnd = endIndex + (isEndingOnEmptyChar ? 1 : 0);
+            final char[] modifiedWraparoundCharList = new char[numFromStart + numToEnd];
+            System.arraycopy(
+                    currentCharacterList,
+                    startIndex,
+                    modifiedWraparoundCharList,
+                    0,
+                    numFromStart
+            );
+            System.arraycopy(
+                    currentCharacterList,
+                    isEndingOnEmptyChar ? 0 : 1,
+                    modifiedWraparoundCharList,
+                    numFromStart,
+                    numToEnd
+            );
+            currentCharacterList = modifiedWraparoundCharList;
+            startIndex = 0;
+            endIndex = currentCharacterList.length - 1;
         }
     }
 

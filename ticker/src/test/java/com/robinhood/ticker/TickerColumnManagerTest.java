@@ -29,7 +29,7 @@ public class TickerColumnManagerTest {
     public void test_setText_animate() {
         assertEquals(0, numberOfTickerColumns());
 
-        tickerColumnManager.setText("1234".toCharArray());
+        tickerColumnManager.setText("1234".toCharArray(), false);
         tickerColumnManager.setAnimationProgress(1f);
         assertEquals(4, numberOfTickerColumns());
         assertEquals('1', tickerColumnAtIndex(0).getTargetChar());
@@ -37,7 +37,7 @@ public class TickerColumnManagerTest {
         assertEquals('3', tickerColumnAtIndex(2).getTargetChar());
         assertEquals('4', tickerColumnAtIndex(3).getTargetChar());
 
-        tickerColumnManager.setText("999".toCharArray());
+        tickerColumnManager.setText("999".toCharArray(), false);
         assertEquals(4, numberOfTickerColumns());
         assertEquals(TickerUtils.EMPTY_CHAR, tickerColumnAtIndex(0).getTargetChar());
         assertEquals('9', tickerColumnAtIndex(1).getTargetChar());
@@ -45,7 +45,7 @@ public class TickerColumnManagerTest {
         assertEquals('9', tickerColumnAtIndex(3).getTargetChar());
 
         tickerColumnManager.setAnimationProgress(1f);
-        tickerColumnManager.setText("899".toCharArray());
+        tickerColumnManager.setText("899".toCharArray(), false);
         assertEquals(3, numberOfTickerColumns());
         assertEquals('8', tickerColumnAtIndex(0).getTargetChar());
         assertEquals('9', tickerColumnAtIndex(1).getTargetChar());
@@ -56,14 +56,14 @@ public class TickerColumnManagerTest {
     public void test_setText_noAnimate() {
         assertEquals(0, numberOfTickerColumns());
 
-        tickerColumnManager.setText("1234".toCharArray());
+        tickerColumnManager.setText("1234".toCharArray(), false);
         assertEquals(4, numberOfTickerColumns());
         assertEquals('1', tickerColumnAtIndex(0).getTargetChar());
         assertEquals('2', tickerColumnAtIndex(1).getTargetChar());
         assertEquals('3', tickerColumnAtIndex(2).getTargetChar());
         assertEquals('4', tickerColumnAtIndex(3).getTargetChar());
 
-        tickerColumnManager.setText("999".toCharArray());
+        tickerColumnManager.setText("999".toCharArray(), false);
         assertEquals(3, numberOfTickerColumns());
         assertEquals('9', tickerColumnAtIndex(0).getTargetChar());
         assertEquals('9', tickerColumnAtIndex(1).getTargetChar());

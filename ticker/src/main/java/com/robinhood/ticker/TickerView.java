@@ -85,6 +85,7 @@ public class TickerView extends View {
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
     private boolean animateMeasurementChange;
+    private boolean characterListWraparound;
 
     public TickerView(Context context) {
         super(context);
@@ -147,6 +148,8 @@ public class TickerView extends View {
                 R.styleable.TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
         this.animateMeasurementChange = arr.getBoolean(
                 R.styleable.TickerView_ticker_animateMeasurementChange, false);
+        this.characterListWraparound = arr.getBoolean(
+                R.styleable.TickerView_ticker_characterListWraparound, false);
         this.gravity = styledAttributes.gravity;
 
         if (styledAttributes.shadowColor != 0) {
@@ -183,7 +186,8 @@ public class TickerView extends View {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                columnManager.setAnimationProgress(animation.getAnimatedFraction());
+                columnManager.setAnimationProgress(
+                        animation.getAnimatedFraction());
                 checkForRelayout();
                 invalidate();
             }
@@ -198,6 +202,9 @@ public class TickerView extends View {
         });
     }
 
+    /**
+     * Only attributes that can be applied from `android:textAppearance` should be added here.
+     */
     private class StyledAttributes {
         int gravity;
         int shadowColor;
@@ -282,7 +289,7 @@ public class TickerView extends View {
         this.text = text;
         final char[] targetText = text == null ? new char[0] : text.toCharArray();
 
-        columnManager.setText(targetText);
+        columnManager.setText(targetText, characterListWraparound);
         setContentDescription(text);
 
         if (animate) {
@@ -457,6 +464,27 @@ public class TickerView extends View {
      */
     public boolean getAnimateMeasurementChange() {
         return animateMeasurementChange;
+    }
+
+    /**
+     * If characterListWraparound is enabled, it means that the ticker animator will always animate
+     * upwards in the character list and looping around once it hits the end.
+     *
+     * <p>For example, given the character list "0123456789" commonly used for numbers, if
+     * characterListWraparound is set to true, the animation from 7 to 9 will proceed as
+     * 7 -> 8 -> 9, and the animation from 9 to 2 will proceed as 9 -> 0 -> 1 -> 2.
+     *
+     * @param characterListWraparound whether or not to enable character list wraparound.
+     */
+    public void setCharacterListWraparound(boolean characterListWraparound) {
+        this.characterListWraparound = characterListWraparound;
+    }
+
+    /**
+     * @return whether or not character list wraparound animation behavior is currently enabled.
+     */
+    public boolean getCharacterListWraparound() {
+        return this.characterListWraparound;
     }
 
     /**

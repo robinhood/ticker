@@ -77,7 +77,7 @@ class TickerColumnManager {
     /**
      * Tell the column manager the new target text that it should display.
      */
-    void setText(char[] text) {
+    void setText(char[] text, boolean wraparound) {
         if (characterLists == null) {
             throw new IllegalStateException("Need to call #setCharacterLists first.");
         }
@@ -105,12 +105,13 @@ class TickerColumnManager {
                             new TickerColumn(characterLists, characterIndicesMaps, metrics));
                     // Intentional fallthrough
                 case LevenshteinUtils.ACTION_SAME:
-                    tickerColumns.get(columnIndex).setTargetChar(text[textIndex]);
+                    tickerColumns.get(columnIndex).setTargetChar(text[textIndex], wraparound);
                     columnIndex++;
                     textIndex++;
                     break;
                 case LevenshteinUtils.ACTION_DELETE:
-                    tickerColumns.get(columnIndex).setTargetChar(TickerUtils.EMPTY_CHAR);
+                    tickerColumns.get(columnIndex).setTargetChar(
+                            TickerUtils.EMPTY_CHAR, wraparound);
                     columnIndex++;
                     break;
                 default:
