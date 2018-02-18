@@ -74,6 +74,10 @@ class TickerColumnManager {
         }
     }
 
+    List<char[]> getCharacterLists() {
+        return characterLists;
+    }
+
     /**
      * Tell the column manager the new target text that it should display.
      */

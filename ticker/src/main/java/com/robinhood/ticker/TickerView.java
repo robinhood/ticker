@@ -257,6 +257,15 @@ public class TickerView extends View {
     }
 
     /**
+     * @return whether or not the character lists (via {@link #setCharacterLists}) have been set.
+     *         Can use this value to determine if you need to call {@link #setCharacterLists}
+     *         before calling {@link #setText}.
+     */
+    public boolean isCharacterListsSet() {
+        return columnManager.getCharacterLists() != null;
+    }
+
+    /**
      * Sets the string value to display. If the TickerView is currently empty, then this method
      * will immediately display the provided text. Otherwise, it will run the default animation
      * to reach the provided text.
