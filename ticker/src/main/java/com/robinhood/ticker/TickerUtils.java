@@ -25,11 +25,11 @@ package com.robinhood.ticker;
 public class TickerUtils {
     static final char EMPTY_CHAR = (char) 0;
 
-    public static String provideNumberList() {
-        return "0123456789";
+    public static TickerCharacterList provideNumberList() {
+        return new TickerCharacterList("0123456789");
     }
 
-    public static String provideAlphabeticalList() {
-        return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public static TickerCharacterList provideAlphabeticalList() {
+        return new TickerCharacterList("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
     }
 }

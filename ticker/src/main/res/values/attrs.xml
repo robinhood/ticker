@@ -7,7 +7,6 @@
             <enum name="number" value="1" />
             <enum name="alphabet" value="2" />
         </attr>
-        <attr name="ticker_characterListWraparound" format="reference|boolean" />
 
         <!-- Custom implementations of common android text attributes -->
         <attr name="android:gravity" tools:ignore="ResourceName" />

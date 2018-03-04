@@ -19,9 +19,6 @@ package com.robinhood.ticker;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Represents a column of characters to be drawn on the screen. This class primarily handles
  * animating within the column from one character to the next and drawing all of the intermediate
@@ -30,8 +27,7 @@ import java.util.Map;
  * @author Jin Cao, Robinhood
  */
 class TickerColumn {
-    private final List<char[]> characterLists;
-    private final List<Map<Character, Integer>> characterIndicesMaps;
+    private final TickerCharacterList[] characterLists;
     private final TickerDrawMetrics metrics;
 
     private char currentChar = TickerUtils.EMPTY_CHAR;
@@ -61,10 +57,8 @@ class TickerColumn {
     private float previousBottomDelta;
     private int directionAdjustment;
 
-    TickerColumn(List<char[]> characterLists, List<Map<Character, Integer>> characterIndicesMaps,
-            TickerDrawMetrics metrics) {
+    TickerColumn(TickerCharacterList[] characterLists, TickerDrawMetrics metrics) {
         this.characterLists = characterLists;
-        this.characterIndicesMaps = characterIndicesMaps;
         this.metrics = metrics;
     }
 
@@ -73,7 +67,7 @@ class TickerColumn {
      * change can either be animated or instant depending on the animation progress set by
      * {@link #setAnimationProgress(float)}.
      */
-    void setTargetChar(char targetChar, boolean wraparound) {
+    void setTargetChar(char targetChar) {
         // Set the current and target characters for the animation
         this.targetChar = targetChar;
         this.sourceWidth = this.currentWidth;
@@ -81,7 +75,7 @@ class TickerColumn {
         this.minimumRequiredWidth = Math.max(this.sourceWidth, this.targetWidth);
 
         // Calculate the current indices
-        setCharacterIndices(wraparound);
+        setCharacterIndices();
 
         final boolean scrollDown = endIndex >= startIndex;
         directionAdjustment = scrollDown ? 1 : -1;
@@ -115,17 +109,16 @@ class TickerColumn {
      * A helper method for populating {@link #startIndex} and {@link #endIndex} given the
      * current and target characters for the animation.
      */
-    private void setCharacterIndices(boolean wraparound) {
+    private void setCharacterIndices() {
         currentCharacterList = null;
 
-        for (int i = 0; i < characterIndicesMaps.size(); i++) {
-            final Map<Character, Integer> characterIndicesMap = characterIndicesMaps.get(i);
-            if (characterIndicesMap.containsKey(currentChar) &&
-                    characterIndicesMap.containsKey(targetChar)) {
-                currentCharacterList = characterLists.get(i);
-                startIndex = characterIndicesMap.get(currentChar);
-                endIndex = characterIndicesMap.get(targetChar);
-                break;
+        for (int i = 0; i < characterLists.length; i++) {
+            final TickerCharacterList.AnimationCharacterIndices indices =
+                    characterLists[i].getCharacterIndices(currentChar, targetChar);
+            if (indices != null) {
+                this.currentCharacterList = this.characterLists[i].getCharacterList();
+                this.startIndex = indices.startIndex;
+                this.endIndex = indices.endIndex;
             }
         }
 
@@ -133,38 +126,13 @@ class TickerColumn {
         // going straight from source to target
         if (currentCharacterList == null) {
             if (currentChar == targetChar) {
-                currentCharacterList = new char[] { currentChar };
+                currentCharacterList = new char[] {currentChar};
                 startIndex = endIndex = 0;
             } else {
                 currentCharacterList = new char[] {currentChar, targetChar};
                 startIndex = 0;
                 endIndex = 1;
             }
-        } else if (wraparound && endIndex < startIndex) {
-            // Modify the current character list & indices to take wraparound into account
-            // NOTE(jin): Some hackery here to avoid copying over the empty character sigh
-            // TODO(jin) revisit this hackery for empty character
-            final boolean isEndingOnEmptyChar = endIndex == 0;
-            final int numFromStart = currentCharacterList.length - startIndex;
-            final int numToEnd = endIndex + (isEndingOnEmptyChar ? 1 : 0);
-            final char[] modifiedWraparoundCharList = new char[numFromStart + numToEnd];
-            System.arraycopy(
-                    currentCharacterList,
-                    startIndex,
-                    modifiedWraparoundCharList,
-                    0,
-                    numFromStart
-            );
-            System.arraycopy(
-                    currentCharacterList,
-                    isEndingOnEmptyChar ? 0 : 1,
-                    modifiedWraparoundCharList,
-                    numFromStart,
-                    numToEnd
-            );
-            currentCharacterList = modifiedWraparoundCharList;
-            startIndex = 0;
-            endIndex = currentCharacterList.length - 1;
         }
     }
 

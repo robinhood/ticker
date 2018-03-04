@@ -85,7 +85,6 @@ public class TickerView extends View {
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
     private boolean animateMeasurementChange;
-    private boolean characterListWraparound;
 
     public TickerView(Context context) {
         super(context);
@@ -148,8 +147,6 @@ public class TickerView extends View {
                 R.styleable.TickerView_ticker_animationDuration, DEFAULT_ANIMATION_DURATION);
         this.animateMeasurementChange = arr.getBoolean(
                 R.styleable.TickerView_ticker_animateMeasurementChange, false);
-        this.characterListWraparound = arr.getBoolean(
-                R.styleable.TickerView_ticker_characterListWraparound, false);
         this.gravity = styledAttributes.gravity;
 
         if (styledAttributes.shadowColor != 0) {
@@ -243,13 +240,7 @@ public class TickerView extends View {
 
 
     /**
-     * This is the primary API that the view uses to determine how to animate from one character
-     * to another. The provided strings dictates what characters will appear between
-     * the start and end characters.
-     *
-     * <p>For example, given the string "abcde", if the view wants to animate from 'd' to 'a',
-     * it will know that it has to go from 'd' to 'c' to 'b' to 'a', and these are the characters
-     * that show up during the animation scroll.
+     * See {@link TickerCharacterList} for more information.
      *
      * <p>We allow for multiple character lists, and the character lists will be prioritized with
      * latter lists given a higher priority than the previous lists. e.g. given "123" and "13",
@@ -257,9 +248,9 @@ public class TickerView extends View {
      *
      * <p>You can find some helpful character list generators in {@link TickerUtils}.
      *
-     * @param characterLists the list of strings that dictates character orderings.
+     * @param characterLists the list of {@link TickerCharacterList} that dictates animation.
      */
-    public void setCharacterLists(String... characterLists) {
+    public void setCharacterLists(TickerCharacterList... characterLists) {
         columnManager.setCharacterLists(characterLists);
     }
 
@@ -289,7 +280,7 @@ public class TickerView extends View {
         this.text = text;
         final char[] targetText = text == null ? new char[0] : text.toCharArray();
 
-        columnManager.setText(targetText, characterListWraparound);
+        columnManager.setText(targetText);
         setContentDescription(text);
 
         if (animate) {
@@ -464,27 +455,6 @@ public class TickerView extends View {
      */
     public boolean getAnimateMeasurementChange() {
         return animateMeasurementChange;
-    }
-
-    /**
-     * If characterListWraparound is enabled, it means that the ticker animator will always animate
-     * upwards in the character list and looping around once it hits the end.
-     *
-     * <p>For example, given the character list "0123456789" commonly used for numbers, if
-     * characterListWraparound is set to true, the animation from 7 to 9 will proceed as
-     * 7 -> 8 -> 9, and the animation from 9 to 2 will proceed as 9 -> 0 -> 1 -> 2.
-     *
-     * @param characterListWraparound whether or not to enable character list wraparound.
-     */
-    public void setCharacterListWraparound(boolean characterListWraparound) {
-        this.characterListWraparound = characterListWraparound;
-    }
-
-    /**
-     * @return whether or not character list wraparound animation behavior is currently enabled.
-     */
-    public boolean getCharacterListWraparound() {
-        return this.characterListWraparound;
     }
 
     /**
