@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Robinhood Markets, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.robinhood.ticker;
 
 import java.util.HashMap;
@@ -12,6 +28,8 @@ import java.util.Set;
  * <p>For example, given the string "abcde", if the view wants to animate from 'd' to 'b',
  * it will know that it has to go from 'd' to 'c' to 'b', and these are the characters
  * that show up during the animation scroll.
+ *
+ * @author Jin Cao, Robinhood
  */
 public class TickerCharacterList {
     private final int numOriginalCharacters;
