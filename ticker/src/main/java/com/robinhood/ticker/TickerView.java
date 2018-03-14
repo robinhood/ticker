@@ -82,6 +82,7 @@ public class TickerView extends View {
     private int textColor;
     private float textSize;
     private int textStyle;
+    private long animationDelayInMillis;
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
     private boolean animateMeasurementChange;
@@ -300,6 +301,7 @@ public class TickerView extends View {
                 animator.cancel();
             }
 
+            animator.setStartDelay(animationDelayInMillis);
             animator.setDuration(animationDurationInMillis);
             animator.setInterpolator(animationInterpolator);
             animator.start();
@@ -386,6 +388,23 @@ public class TickerView extends View {
 
         textPaint.setTypeface(typeface);
         onTextPaintMeasurementChanged();
+    }
+
+    /**
+     * @return the delay in milliseconds before the transition animations runs
+     */
+    public long getAnimationDelay() {
+        return animationDelayInMillis;
+    }
+
+    /**
+     * Sets the delay in milliseconds before this TickerView runs its transition animations. The
+     * default animation delay is 0.
+     *
+     * @param animationDelayInMillis the delay in milliseconds.
+     */
+    public void setAnimationDelay(long animationDelayInMillis) {
+        this.animationDelayInMillis = animationDelayInMillis;
     }
 
     /**
