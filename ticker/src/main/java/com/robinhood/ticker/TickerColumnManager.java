@@ -47,12 +47,15 @@ class TickerColumnManager {
     /**
      * @inheritDoc TickerView#setCharacterLists
      */
-    void setCharacterLists(TickerCharacterList... characterLists) {
-        this.characterLists = characterLists;
+    void setCharacterLists(String... characterLists) {
+        this.characterLists = new TickerCharacterList[characterLists.length];
+        for (int i = 0; i < characterLists.length; i++) {
+            this.characterLists[i] = new TickerCharacterList(characterLists[i]);
+        }
 
         this.supportedCharacters = new HashSet<>();
         for (int i = 0; i < characterLists.length; i++) {
-            this.supportedCharacters.addAll(characterLists[i].getSupportedCharacters());
+            this.supportedCharacters.addAll(this.characterLists[i].getSupportedCharacters());
         }
     }
 

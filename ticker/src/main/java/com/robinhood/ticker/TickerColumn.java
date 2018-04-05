@@ -113,7 +113,7 @@ class TickerColumn {
         currentCharacterList = null;
 
         for (int i = 0; i < characterLists.length; i++) {
-            final TickerCharacterList.AnimationCharacterIndices indices =
+            final TickerCharacterList.CharacterIndices indices =
                     characterLists[i].getCharacterIndices(currentChar, targetChar);
             if (indices != null) {
                 this.currentCharacterList = this.characterLists[i].getCharacterList();

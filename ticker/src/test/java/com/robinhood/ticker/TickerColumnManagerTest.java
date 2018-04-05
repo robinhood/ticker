@@ -22,7 +22,7 @@ public class TickerColumnManagerTest {
         when(metrics.getCharWidth(TickerUtils.EMPTY_CHAR)).thenReturn(0f);
 
         tickerColumnManager = new TickerColumnManager(metrics);
-        tickerColumnManager.setCharacterLists(new TickerCharacterList("1234567890"));
+        tickerColumnManager.setCharacterLists("1234567890");
     }
 
     @Test

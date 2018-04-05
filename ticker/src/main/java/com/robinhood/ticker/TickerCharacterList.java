@@ -31,17 +31,17 @@ import java.util.Set;
  *
  * @author Jin Cao, Robinhood
  */
-public class TickerCharacterList {
+class TickerCharacterList {
     private final int numOriginalCharacters;
     // The saved character list will always be of the format: EMPTY, list, list
     private final char[] characterList;
     // A minor optimization so that we can cache the indices of each character.
     private final Map<Character, Integer> characterIndicesMap;
 
-    public TickerCharacterList(String characterList) {
+    TickerCharacterList(String characterList) {
         if (characterList.contains(Character.toString(TickerUtils.EMPTY_CHAR))) {
             throw new IllegalArgumentException(
-                    "You don't need to include TickerUtils.EMPTY_CHAR in the character list.");
+                    "You cannot include TickerUtils.EMPTY_CHAR in the character list.");
         }
 
         final char[] charsArray = characterList.toCharArray();
@@ -64,24 +64,25 @@ public class TickerCharacterList {
     /**
      * @param start the character that we want to animate from
      * @param end the character that we want to animate to
-     * @return a valid {@link AnimationCharacterIndices}, or null if the inputs are not supported.
+     * @return a valid pair of start and end indices, or null if the inputs are not supported.
      */
-    AnimationCharacterIndices getCharacterIndices(char start, char end) {
+    CharacterIndices getCharacterIndices(char start, char end) {
         int startIndex = getIndexOfChar(start);
         int endIndex = getIndexOfChar(end);
         if (startIndex < 0 || endIndex < 0) {
             return null;
         }
 
+        // see if the wrap-around animation is shorter distance than the original animation
         if (start != TickerUtils.EMPTY_CHAR && end != TickerUtils.EMPTY_CHAR &&
                 endIndex < startIndex) {
             final int nonWrapDistance = startIndex - endIndex;
             final int wrapDistance = numOriginalCharacters - startIndex + endIndex;
             if (wrapDistance < nonWrapDistance) {
-                endIndex = numOriginalCharacters + endIndex;
+                endIndex = endIndex + numOriginalCharacters;
             }
         }
-        return new AnimationCharacterIndices(startIndex, endIndex);
+        return new CharacterIndices(startIndex, endIndex);
     }
 
     Set<Character> getSupportedCharacters() {
@@ -102,11 +103,11 @@ public class TickerCharacterList {
         }
     }
 
-    public class AnimationCharacterIndices {
-        public final int startIndex;
-        public final int endIndex;
+    class CharacterIndices {
+        final int startIndex;
+        final int endIndex;
 
-        public AnimationCharacterIndices(int startIndex, int endIndex) {
+        public CharacterIndices(int startIndex, int endIndex) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
         }

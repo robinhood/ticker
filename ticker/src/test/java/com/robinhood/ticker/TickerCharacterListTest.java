@@ -17,8 +17,7 @@ public class TickerCharacterListTest {
     @Test
     public void test_getCharacterIndices() {
         final TickerCharacterList list = new TickerCharacterList("012");
-        final TickerCharacterList.AnimationCharacterIndices indices =
-                list.getCharacterIndices('0', '1');
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('0', '1');
         assertEquals(1, indices.startIndex);
         assertEquals(2, indices.endIndex);
     }
@@ -26,8 +25,7 @@ public class TickerCharacterListTest {
     @Test
     public void test_getCharacterIndicesWraparound() {
         final TickerCharacterList list = new TickerCharacterList("012");
-        final TickerCharacterList.AnimationCharacterIndices indices =
-                list.getCharacterIndices('2', '0');
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('2', '0');
         assertEquals(3, indices.startIndex);
         assertEquals(4, indices.endIndex);
     }
@@ -35,7 +33,7 @@ public class TickerCharacterListTest {
     @Test
     public void test_getCharacterIndicesEmptyNoWraparound() {
         final TickerCharacterList list = new TickerCharacterList("012");
-        final TickerCharacterList.AnimationCharacterIndices indices =
+        final TickerCharacterList.CharacterIndices indices =
                 list.getCharacterIndices('2', TickerUtils.EMPTY_CHAR);
         assertEquals(3, indices.startIndex);
         assertEquals(0, indices.endIndex);
