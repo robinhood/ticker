@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     resourcePrefix 'ticker_'
 
     defaultConfig {
         minSdkVersion 12
-        targetSdkVersion 26
+        targetSdkVersion 27
     }
 }
 

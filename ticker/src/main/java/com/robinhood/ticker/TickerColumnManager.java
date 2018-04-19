@@ -59,7 +59,7 @@ class TickerColumnManager {
         }
     }
 
-    List<char[]> getCharacterLists() {
+    TickerCharacterList[] getCharacterLists() {
         return characterLists;
     }
 
