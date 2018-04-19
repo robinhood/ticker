@@ -8,10 +8,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyChar;
 import static org.mockito.Mockito.reset;
@@ -24,13 +20,7 @@ public class TickerColumnTest {
     private static final float CHAR_HEIGHT = 5f;
     private static final float DEFAULT_CHAR_WIDTH = 10f;
 
-    private static char[] charList = new char[] { '$', TickerUtils.EMPTY_CHAR, '0', '1', '2' };
-    private static Map<Character, Integer> charMap = new HashMap<>();
-    static {
-        for (int i = 0; i < charList.length; i++) {
-            charMap.put(charList[i], i);
-        }
-    }
+    private static TickerCharacterList characterList = new TickerCharacterList("01234");
 
     @Mock TickerDrawMetrics metrics;
     @Mock Canvas canvas;
@@ -46,8 +36,7 @@ public class TickerColumnTest {
         when(metrics.getCharWidth(anyChar())).thenReturn(DEFAULT_CHAR_WIDTH);
         when(metrics.getCharWidth(TickerUtils.EMPTY_CHAR)).thenReturn(0f);
         tickerColumn = new TickerColumn(
-                Collections.singletonList(charList),
-                Collections.singletonList(charMap),
+                new TickerCharacterList[] { characterList },
                 metrics
         );
     }
@@ -86,16 +75,15 @@ public class TickerColumnTest {
         tickerColumn.setTargetChar('0');
         setProgress(1f);
         assertEquals('0', tickerColumn.getTargetChar());
-        verifyDraw(2, 0f);
+        verifyDraw(1, 0f);
         verifyNoMoreInteractions(canvas);
     }
 
     @Test
     public void test_draw_noAnimation_edge1() {
-        tickerColumn.setTargetChar('$');
+        tickerColumn.setTargetChar(TickerUtils.EMPTY_CHAR);
         setProgress(1f);
-        verify(canvas).drawText(charList, 0, 1, 0f, 0f, paint);
-        verify(canvas).drawText(charList, 1, 1, 0f, -CHAR_HEIGHT, paint);
+        verifyDraw(0, 0f);
         verifyNoMoreInteractions(canvas);
     }
 
@@ -103,8 +91,7 @@ public class TickerColumnTest {
     public void test_draw_noAnimation_edge2() {
         tickerColumn.setTargetChar('2');
         setProgress(1f);
-        verify(canvas).drawText(charList, 4, 1, 0f, 0f, paint);
-        verify(canvas).drawText(charList, 3, 1, 0f, CHAR_HEIGHT, paint);
+        verifyDraw(3, 0f);
         verifyNoMoreInteractions(canvas);
     }
 
@@ -112,7 +99,7 @@ public class TickerColumnTest {
     public void test_draw_startAnimation() {
         tickerColumn.setTargetChar('1');
         setProgress(0f);
-        verifyDraw(1, 0f);
+        verifyDraw(0, 0f);
         verifyNoMoreInteractions(canvas);
     }
 
@@ -120,7 +107,7 @@ public class TickerColumnTest {
     public void test_draw_duringAnimation1() {
         tickerColumn.setTargetChar('1');
         setProgress(0.5f);
-        verifyDraw(2, 0f);
+        verifyDraw(1, 0f);
         verifyNoMoreInteractions(canvas);
     }
 
@@ -129,7 +116,7 @@ public class TickerColumnTest {
         tickerColumn.setTargetChar('1');
         setProgress(0.75f);
         // We should be half way between '0' and '1'.
-        verifyDraw(2, CHAR_HEIGHT / 2);
+        verifyDraw(1, CHAR_HEIGHT / 2);
         verifyNoMoreInteractions(canvas);
     }
 
@@ -141,7 +128,7 @@ public class TickerColumnTest {
         tickerColumn.setTargetChar('2');
         setProgress(0f);
 
-        verifyDraw(1, 0f, 2);
+        verifyDraw(0, 0f, 2);
 
         verifyNoMoreInteractions(canvas);
     }
@@ -150,12 +137,12 @@ public class TickerColumnTest {
     public void test_draw_interruptedStartAnimation_midAnimation() {
         tickerColumn.setTargetChar('1');
         setProgress(0f);
-        verifyDraw(1, 0f);
+        verifyDraw(0, 0f);
 
         tickerColumn.setTargetChar('2');
         setProgress(0.25f);
         // We should be 3 quarters way between EMPTY_CHAR and '0'.
-        verifyDraw(1, CHAR_HEIGHT / 4 * 3);
+        verifyDraw(0, CHAR_HEIGHT / 4 * 3);
 
         verifyNoMoreInteractions(canvas);
     }
@@ -164,11 +151,11 @@ public class TickerColumnTest {
     public void test_draw_interruptedStartAnimation_endAnimation() {
         tickerColumn.setTargetChar('1');
         setProgress(0f);
-        verifyDraw(1, 0f);
+        verifyDraw(0, 0f);
 
         tickerColumn.setTargetChar('0');
         setProgress(1f);
-        verifyDraw(2, 0f);
+        verifyDraw(1, 0f);
 
         verifyNoMoreInteractions(canvas);
     }
@@ -178,11 +165,11 @@ public class TickerColumnTest {
         tickerColumn.setTargetChar('1');
         setProgress(0.75f);
 
-        tickerColumn.setTargetChar('$');
+        tickerColumn.setTargetChar(TickerUtils.EMPTY_CHAR);
         setProgress(0f);
 
         // We should still be half way between '0' and '1' since the new animation just started.
-        verifyDraw(2, CHAR_HEIGHT / 2, 2);
+        verifyDraw(1, CHAR_HEIGHT / 2, 2);
 
         verifyNoMoreInteractions(canvas);
     }
@@ -192,11 +179,11 @@ public class TickerColumnTest {
         tickerColumn.setTargetChar('1');
         setProgress(0.75f);
         // We should be half way between '0' and '1'.
-        verifyDraw(2, CHAR_HEIGHT / 2);
+        verifyDraw(1, CHAR_HEIGHT / 2);
 
-        tickerColumn.setTargetChar('$');
+        tickerColumn.setTargetChar('0');
         setProgress(0.5f);
-        // We are now quarter way between EMPTY_CHAR and '0'.
+        // We are now quarter way between '0' and '1'.
         verifyDraw(1, CHAR_HEIGHT / 4);
 
         verifyNoMoreInteractions(canvas);
@@ -207,11 +194,11 @@ public class TickerColumnTest {
         tickerColumn.setTargetChar('1');
         setProgress(0.75f);
         // We should be half way between '0' and '1'.
-        verifyDraw(2, CHAR_HEIGHT / 2);
+        verifyDraw(1, CHAR_HEIGHT / 2);
 
         tickerColumn.setTargetChar('0');
         setProgress(1f);
-        verifyDraw(2, 0f);
+        verifyDraw(1, 0f);
 
         verifyNoMoreInteractions(canvas);
     }
@@ -221,6 +208,22 @@ public class TickerColumnTest {
         // Simulates how the ticker column would normally get callbacks
 
         tickerColumn.setTargetChar('0');
+        setProgress(0f);
+        verifyDraw(0, 0f);
+
+        setProgress(0.25f);
+        verifyDraw(0, CHAR_HEIGHT / 4);
+
+        setProgress(0.75f);
+        verifyDraw(0, CHAR_HEIGHT / 4 * 3);
+
+        setProgress(1f);
+        verifyDraw(1, 0f);
+
+        verifyNoMoreInteractions(canvas);
+        reset(canvas);
+
+        tickerColumn.setTargetChar('1');
         setProgress(0f);
         verifyDraw(1, 0f);
 
@@ -236,36 +239,34 @@ public class TickerColumnTest {
         verifyNoMoreInteractions(canvas);
         reset(canvas);
 
-        tickerColumn.setTargetChar('1');
+        tickerColumn.setTargetChar(TickerUtils.EMPTY_CHAR);
         setProgress(0f);
         verifyDraw(2, 0f);
 
         setProgress(0.25f);
-        verifyDraw(2, CHAR_HEIGHT / 4);
-
-        setProgress(0.75f);
-        verifyDraw(2, CHAR_HEIGHT / 4 * 3);
-
-        setProgress(1f);
-        verifyDraw(3, 0f);
-
-        verifyNoMoreInteractions(canvas);
-        reset(canvas);
-
-        tickerColumn.setTargetChar(TickerUtils.EMPTY_CHAR);
-        setProgress(0f);
-        verifyDraw(3, 0f);
-
-        setProgress(0.25f);
-        verifyDraw(3, -CHAR_HEIGHT / 2);
-
-        setProgress(0.75f);
         verifyDraw(2, -CHAR_HEIGHT / 2);
 
+        setProgress(0.75f);
+        verifyDraw(1, -CHAR_HEIGHT / 2);
+
         setProgress(1f);
-        verifyDraw(1, 0f);
+        verifyDraw(0, 0f);
 
         verifyNoMoreInteractions(canvas);
+    }
+
+    @Test
+    public void test_draw_wraparound() {
+        tickerColumn.setTargetChar('4');
+        setProgress(1f);
+        verifyDraw(5, 0f);
+
+        tickerColumn.setTargetChar('1');
+        setProgress(0.5f);
+        verifyDraw(6, 0f);
+
+        setProgress(1f);
+        verifyDraw(7, 0f);
     }
 
     private void setProgress(float progress) {
@@ -278,11 +279,19 @@ public class TickerColumnTest {
     }
 
     private void verifyDraw(int index, float offset, int times) {
+        verifyDraw(characterList.getCharacterList(), index, offset, times);
+    }
+
+    private void verifyDraw(char[] charList, int index, float offset, int times) {
         verify(canvas, times(times))
                 .drawText(charList, index, 1, 0f, offset, paint);
-        verify(canvas, times(times))
-                .drawText(charList, index + 1, 1, 0f, offset - CHAR_HEIGHT, paint);
-        verify(canvas, times(times))
-                .drawText(charList, index - 1, 1, 0f, offset + CHAR_HEIGHT, paint);
+        if (index < charList.length - 1) {
+            verify(canvas, times(times))
+                    .drawText(charList, index + 1, 1, 0f, offset - CHAR_HEIGHT, paint);
+        }
+        if (index >= 1) {
+            verify(canvas, times(times))
+                    .drawText(charList, index - 1, 1, 0f, offset + CHAR_HEIGHT, paint);
+        }
     }
 }

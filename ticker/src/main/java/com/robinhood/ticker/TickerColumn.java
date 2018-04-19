@@ -19,9 +19,6 @@ package com.robinhood.ticker;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Represents a column of characters to be drawn on the screen. This class primarily handles
  * animating within the column from one character to the next and drawing all of the intermediate
@@ -30,8 +27,7 @@ import java.util.Map;
  * @author Jin Cao, Robinhood
  */
 class TickerColumn {
-    private final List<char[]> characterLists;
-    private final List<Map<Character, Integer>> characterIndicesMaps;
+    private final TickerCharacterList[] characterLists;
     private final TickerDrawMetrics metrics;
 
     private char currentChar = TickerUtils.EMPTY_CHAR;
@@ -61,10 +57,8 @@ class TickerColumn {
     private float previousBottomDelta;
     private int directionAdjustment;
 
-    TickerColumn(List<char[]> characterLists, List<Map<Character, Integer>> characterIndicesMaps,
-            TickerDrawMetrics metrics) {
+    TickerColumn(TickerCharacterList[] characterLists, TickerDrawMetrics metrics) {
         this.characterLists = characterLists;
-        this.characterIndicesMaps = characterIndicesMaps;
         this.metrics = metrics;
     }
 
@@ -118,14 +112,13 @@ class TickerColumn {
     private void setCharacterIndices() {
         currentCharacterList = null;
 
-        for (int i = 0; i < characterIndicesMaps.size(); i++) {
-            final Map<Character, Integer> characterIndicesMap = characterIndicesMaps.get(i);
-            if (characterIndicesMap.containsKey(currentChar) &&
-                    characterIndicesMap.containsKey(targetChar)) {
-                currentCharacterList = characterLists.get(i);
-                startIndex = characterIndicesMap.get(currentChar);
-                endIndex = characterIndicesMap.get(targetChar);
-                break;
+        for (int i = 0; i < characterLists.length; i++) {
+            final TickerCharacterList.CharacterIndices indices =
+                    characterLists[i].getCharacterIndices(currentChar, targetChar);
+            if (indices != null) {
+                this.currentCharacterList = this.characterLists[i].getCharacterList();
+                this.startIndex = indices.startIndex;
+                this.endIndex = indices.endIndex;
             }
         }
 
@@ -133,10 +126,10 @@ class TickerColumn {
         // going straight from source to target
         if (currentCharacterList == null) {
             if (currentChar == targetChar) {
-                currentCharacterList = new char[] { currentChar };
+                currentCharacterList = new char[] {currentChar};
                 startIndex = endIndex = 0;
             } else {
-                currentCharacterList = new char[]{currentChar, targetChar};
+                currentCharacterList = new char[] {currentChar, targetChar};
                 startIndex = 0;
                 endIndex = 1;
             }

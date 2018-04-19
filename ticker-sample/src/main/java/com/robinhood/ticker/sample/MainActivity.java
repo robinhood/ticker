@@ -4,13 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.robinhood.ticker.TickerUtils;
 import com.robinhood.ticker.TickerView;
 
 import java.util.Random;
 
 public class MainActivity extends BaseActivity {
-    private final String alphabetlist = TickerUtils.provideAlphabeticalList();
+    private final String alphabetlist = "abcdefghijklmnopqrstuvwxyz";
 
     private TickerView ticker1, ticker2, ticker3;
 

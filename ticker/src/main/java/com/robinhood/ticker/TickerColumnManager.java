@@ -20,10 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,9 +37,7 @@ class TickerColumnManager {
     final ArrayList<TickerColumn> tickerColumns = new ArrayList<>();
     private final TickerDrawMetrics metrics;
 
-    private List<char[]> characterLists;
-    // A minor optimization so that we can cache the indices of each character.
-    private List<Map<Character, Integer>> characterIndicesMaps;
+    private TickerCharacterList[] characterLists;
     private Set<Character> supportedCharacters;
 
     TickerColumnManager(TickerDrawMetrics metrics) {
@@ -53,24 +48,14 @@ class TickerColumnManager {
      * @inheritDoc TickerView#setCharacterLists
      */
     void setCharacterLists(String... characterLists) {
-        this.characterLists = new ArrayList<>(characterLists.length);
-        this.characterIndicesMaps = new ArrayList<>(characterLists.length);
+        this.characterLists = new TickerCharacterList[characterLists.length];
+        for (int i = 0; i < characterLists.length; i++) {
+            this.characterLists[i] = new TickerCharacterList(characterLists[i]);
+        }
+
         this.supportedCharacters = new HashSet<>();
         for (int i = 0; i < characterLists.length; i++) {
-            final String characterList = characterLists[i];
-            final char[] modifiedCharacterList =
-                    (TickerUtils.EMPTY_CHAR + characterList).toCharArray();
-            this.characterLists.add(modifiedCharacterList);
-
-            for (int j = 0; j < modifiedCharacterList.length; j++) {
-                supportedCharacters.add(modifiedCharacterList[j]);
-            }
-
-            final Map<Character, Integer> indexMap = new HashMap<>(modifiedCharacterList.length);
-            for (int j = 0; j < modifiedCharacterList.length; j++) {
-                indexMap.put(modifiedCharacterList[j], j);
-            }
-            characterIndicesMaps.add(indexMap);
+            this.supportedCharacters.addAll(this.characterLists[i].getSupportedCharacters());
         }
     }
 
@@ -106,7 +91,7 @@ class TickerColumnManager {
             switch (actions[i]) {
                 case LevenshteinUtils.ACTION_INSERT:
                     tickerColumns.add(columnIndex,
-                            new TickerColumn(characterLists, characterIndicesMaps, metrics));
+                            new TickerColumn(characterLists, metrics));
                     // Intentional fallthrough
                 case LevenshteinUtils.ACTION_SAME:
                     tickerColumns.get(columnIndex).setTargetChar(text[textIndex]);
