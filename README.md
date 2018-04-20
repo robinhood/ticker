@@ -1,5 +1,12 @@
 ![](https://github.com/robinhood/ticker/blob/master/assets/ticker_main.gif)
 
+Migrating to version 2
+======================
+
+There are some breaking API changes introduced in ticker 2.0. Please refer to the
+[2.0 migration doc](https://github.com/robinhood/ticker/blob/master/2_0_migration.md).
+
+
 What is Ticker?
 ===============
 
@@ -11,9 +18,8 @@ from "9999" to "10000").
 You can specify how the animations proceed by defining an array of characters in order. Each
 character displayed by Ticker is controlled by this array which dictates how to animate from
 a starting character to a target character. For example, if you just use a basic ASCII character
-list, when animating from 'A' to 'Z', it will go from 'A' -> 'B' -> ... 'Z'. The character
-ordering does not wrap around, meaning that to animate from 'Z' to 'A' it will go from
-'Z' -> 'Y' -> ... -> 'A'.
+list, when animating from 'A' to 'Z', it will go from 'A' -> 'B' -> ... 'Z'. We will perform
+wrap-around animation when it's faster (e.g. 'Z' to 'A' will just animate 'Z' -> 'A').
 
 
 Getting started
@@ -22,7 +28,7 @@ Getting started
 Add the ticker dependency to your `build.gradle`.
 
 ```groovy
-implementation 'com.robinhood.ticker:ticker:1.2.2'
+implementation 'com.robinhood.ticker:ticker:2.0.0'
 ```
 
 
@@ -42,7 +48,7 @@ Then add the character array to specify the animation style:
 
 ```java
 final TickerView tickerView = findViewById(R.id.tickerView);
-tickerView.setCharacterList(TickerUtils.getDefaultNumberList());
+tickerView.setCharacterLists(TickerUtils.provideNumberList());
 ```
 
 That's it! Now you can call `setText` to display your data.

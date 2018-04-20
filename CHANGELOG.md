@@ -1,3 +1,9 @@
+Version 2.0.0 *(2018-04-20)*
+----------------------------
+Please refer to the
+[2.0 migration doc](https://github.com/robinhood/ticker/blob/master/2_0_migration.md)
+for more information on this release.
+
 Version 1.2.2 *(2017-12-11)*
 ----------------------------
 * Fix bug where ticker column size doesn't change after text size change.
