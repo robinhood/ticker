@@ -359,7 +359,7 @@ public class TickerView extends View {
      * Sets the text size used by this view. The default text size is defined by
      * {@link #DEFAULT_TEXT_SIZE}.
      *
-     * @param textSize the text size to set the text to.
+     * @param textSize the text size in pixel units.
      */
     public void setTextSize(float textSize) {
         if (this.textSize != textSize) {
