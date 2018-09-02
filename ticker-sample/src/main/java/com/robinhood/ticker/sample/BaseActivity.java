@@ -1,9 +1,10 @@
 package com.robinhood.ticker.sample;
 
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 
 import java.util.Random;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected static final Random RANDOM = new Random(System.currentTimeMillis());
