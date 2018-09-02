@@ -86,6 +86,8 @@ public class TickerView extends View {
     private long animationDurationInMillis;
     private Interpolator animationInterpolator;
     private boolean animateMeasurementChange;
+    // pending text set from XML because we didn't have a character list initially
+    private String pendingTextToSet;
 
     public TickerView(Context context) {
         super(context);
@@ -177,7 +179,11 @@ public class TickerView extends View {
                 }
         }
 
-        setText(styledAttributes.text, false);
+        if (isCharacterListsSet()) {
+            setText(styledAttributes.text, false);
+        } else {
+            this.pendingTextToSet = styledAttributes.text;
+        }
 
         arr.recycle();
 
@@ -259,6 +265,10 @@ public class TickerView extends View {
      */
     public void setCharacterLists(String... characterLists) {
         columnManager.setCharacterLists(characterLists);
+        if (pendingTextToSet != null) {
+            setText(pendingTextToSet);
+            pendingTextToSet = null;
+        }
     }
 
     /**
