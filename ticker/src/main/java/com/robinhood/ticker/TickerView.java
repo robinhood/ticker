@@ -266,7 +266,7 @@ public class TickerView extends View {
     public void setCharacterLists(String... characterLists) {
         columnManager.setCharacterLists(characterLists);
         if (pendingTextToSet != null) {
-            setText(pendingTextToSet);
+            setText(pendingTextToSet, false);
             pendingTextToSet = null;
         }
     }
