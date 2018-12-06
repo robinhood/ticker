@@ -31,6 +31,14 @@ public class TickerCharacterListTest {
     }
 
     @Test
+    public void test_getCharacterIndicesWraparound2() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('0', '2');
+        assertEquals(4, indices.startIndex);
+        assertEquals(3, indices.endIndex);
+    }
+
+    @Test
     public void test_getCharacterIndicesEmptyNoWraparound() {
         final TickerCharacterList list = new TickerCharacterList("012");
         final TickerCharacterList.CharacterIndices indices =
