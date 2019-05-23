@@ -64,33 +64,55 @@ class TickerCharacterList {
     /**
      * @param start the character that we want to animate from
      * @param end the character that we want to animate to
+     * @param preferredDirection the preferred scrolling direction
      * @return a valid pair of start and end indices, or null if the inputs are not supported.
      */
-    CharacterIndices getCharacterIndices(char start, char end) {
+    CharacterIndices getCharacterIndices(char start, char end, int preferredDirection) {
         int startIndex = getIndexOfChar(start);
         int endIndex = getIndexOfChar(end);
+
         if (startIndex < 0 || endIndex < 0) {
             return null;
         }
 
-        // see if the wrap-around animation is shorter distance than the original animation
-        if (start != TickerUtils.EMPTY_CHAR && end != TickerUtils.EMPTY_CHAR) {
-            if (endIndex < startIndex) {
-                // If we are potentially going backwards
-                final int nonWrapDistance = startIndex - endIndex;
-                final int wrapDistance = numOriginalCharacters - startIndex + endIndex;
-                if (wrapDistance < nonWrapDistance) {
+        switch (preferredDirection) {
+            case TickerView.DIRECTION_DOWN:
+                if (end == TickerUtils.EMPTY_CHAR) {
+                    endIndex = characterList.length;
+                } else if (endIndex < startIndex) {
                     endIndex += numOriginalCharacters;
                 }
-            } else if (startIndex < endIndex) {
-                // If we are potentially going forwards
-                final int nonWrapDistance = endIndex - startIndex;
-                final int wrapDistance = numOriginalCharacters - endIndex + startIndex;
-                if (wrapDistance < nonWrapDistance) {
+
+                break;
+            case TickerView.DIRECTION_UP:
+                if (startIndex < endIndex) {
                     startIndex += numOriginalCharacters;
                 }
-            }
+
+                break;
+            default:
+                // see if the wrap-around animation is shorter distance than the original animation
+                if (start != TickerUtils.EMPTY_CHAR && end != TickerUtils.EMPTY_CHAR) {
+                    if (endIndex < startIndex) {
+                        // If we are potentially going backwards
+                        final int nonWrapDistance = startIndex - endIndex;
+                        final int wrapDistance = numOriginalCharacters - startIndex + endIndex;
+                        if (wrapDistance < nonWrapDistance) {
+                            endIndex += numOriginalCharacters;
+                        }
+                    } else if (startIndex < endIndex) {
+                        // If we are potentially going forwards
+                        final int nonWrapDistance = endIndex - startIndex;
+                        final int wrapDistance = numOriginalCharacters - endIndex + startIndex;
+                        if (wrapDistance < nonWrapDistance) {
+                            startIndex += numOriginalCharacters;
+                        }
+                    }
+                }
+
+                break;
         }
+
         return new CharacterIndices(startIndex, endIndex);
     }
 

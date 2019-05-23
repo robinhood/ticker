@@ -114,7 +114,7 @@ class TickerColumn {
 
         for (int i = 0; i < characterLists.length; i++) {
             final TickerCharacterList.CharacterIndices indices =
-                    characterLists[i].getCharacterIndices(currentChar, targetChar);
+                    characterLists[i].getCharacterIndices(currentChar, targetChar, metrics.getPreferredScrollingDirection());
             if (indices != null) {
                 this.currentCharacterList = this.characterLists[i].getCharacterList();
                 this.startIndex = indices.startIndex;

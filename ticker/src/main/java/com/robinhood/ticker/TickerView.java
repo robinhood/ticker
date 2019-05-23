@@ -64,6 +64,10 @@ public class TickerView extends View {
             new AccelerateDecelerateInterpolator();
     private static final int DEFAULT_GRAVITY = Gravity.START;
 
+    public static final int DIRECTION_ANY = 0;
+    public static final int DIRECTION_UP = 1;
+    public static final int DIRECTION_DOWN = 2;
+
     protected final Paint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
     private final TickerDrawMetrics metrics = new TickerDrawMetrics(textPaint);
@@ -453,6 +457,19 @@ public class TickerView extends View {
      */
     public void setAnimationInterpolator(Interpolator animationInterpolator) {
         this.animationInterpolator = animationInterpolator;
+    }
+
+    /**
+     * Sets the preferred scrolling direction for ticker animations.
+     * Eligible params include {@link #DIRECTION_ANY}, {@link #DIRECTION_UP}
+     * and {@link #DIRECTION_DOWN}.
+     *
+     * The default value is {@link #DIRECTION_ANY}.
+     *
+     * @param preferredScrollingDirection the preferred scrolling directional
+     */
+    public void setPreferredScrollingDirection(int preferredScrollingDirection) {
+        this.metrics.setPreferredScrollingDirection(preferredScrollingDirection);
     }
 
     /**
