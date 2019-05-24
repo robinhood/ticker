@@ -183,6 +183,11 @@ public class TickerView extends View {
                 }
         }
 
+        final int defaultPreferredScrollingDirection =
+                arr.getInt(R.styleable.TickerView_ticker_defaultPreferredScrollingDirection, DIRECTION_ANY);
+
+        metrics.setPreferredScrollingDirection(defaultPreferredScrollingDirection);
+
         if (isCharacterListsSet()) {
             setText(styledAttributes.text, false);
         } else {
