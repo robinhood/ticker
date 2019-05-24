@@ -39,11 +39,45 @@ public class TickerCharacterListTest {
     }
 
     @Test
+    public void test_getCharacterIndicesForcedDown() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('2', '0', TickerView.DIRECTION_DOWN);
+        assertEquals(3, indices.startIndex);
+        assertEquals(4, indices.endIndex);
+    }
+
+    @Test
+    public void test_getCharacterIndicesForcedUp() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('0', '2', TickerView.DIRECTION_UP);
+        assertEquals(4, indices.startIndex);
+        assertEquals(3, indices.endIndex);
+    }
+
+    @Test
     public void test_getCharacterIndicesEmptyNoWraparound() {
         final TickerCharacterList list = new TickerCharacterList("012");
         final TickerCharacterList.CharacterIndices indices =
                 list.getCharacterIndices('2', TickerUtils.EMPTY_CHAR, TickerView.DIRECTION_ANY);
         assertEquals(3, indices.startIndex);
         assertEquals(0, indices.endIndex);
+    }
+
+    @Test
+    public void test_getCharacterIndicesEmptyForcedUp() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices =
+                list.getCharacterIndices('2', TickerUtils.EMPTY_CHAR, TickerView.DIRECTION_UP);
+        assertEquals(3, indices.startIndex);
+        assertEquals(0, indices.endIndex);
+    }
+
+    @Test
+    public void test_getCharacterIndicesEmptyForcedDown() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices =
+                list.getCharacterIndices('2', TickerUtils.EMPTY_CHAR, TickerView.DIRECTION_DOWN);
+        assertEquals(3, indices.startIndex);
+        assertEquals(7, indices.endIndex);
     }
 }
