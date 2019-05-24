@@ -68,6 +68,7 @@ android:gravity="center"
 android:textColor="@color/colorPrimary"
 android:textSize="16sp"
 app:ticker_animationDuration="1500"
+app:ticker_preferredScrollingDirection="any"
 ```
 
 Or Java:
@@ -79,6 +80,7 @@ tickerView.setTypeface(myCustomTypeface);
 tickerView.setAnimationDuration(500);
 tickerView.setAnimationInterpolator(new OvershootInterpolator());
 tickerView.setGravity(Gravity.START);
+tickerView.setPreferredScrollingDirection(TickerView.DIRECTION_ANY);
 ```
 
 For the full list of XML attributes that we support, please refer to the 
