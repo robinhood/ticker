@@ -80,7 +80,7 @@ tickerView.setTypeface(myCustomTypeface);
 tickerView.setAnimationDuration(500);
 tickerView.setAnimationInterpolator(new OvershootInterpolator());
 tickerView.setGravity(Gravity.START);
-tickerView.setPreferredScrollingDirection(TickerView.DIRECTION_ANY);
+tickerView.setPreferredScrollingDirection(TickerView.ScrollingDirection.ANY);
 ```
 
 For the full list of XML attributes that we support, please refer to the 

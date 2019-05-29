@@ -35,6 +35,8 @@ public class TickerColumnTest {
         when(metrics.getCharHeight()).thenReturn(CHAR_HEIGHT);
         when(metrics.getCharWidth(anyChar())).thenReturn(DEFAULT_CHAR_WIDTH);
         when(metrics.getCharWidth(TickerUtils.EMPTY_CHAR)).thenReturn(0f);
+        when(metrics.getPreferredScrollingDirection()).thenReturn(TickerView.ScrollingDirection.ANY);
+
         tickerColumn = new TickerColumn(
                 new TickerCharacterList[] { characterList },
                 metrics

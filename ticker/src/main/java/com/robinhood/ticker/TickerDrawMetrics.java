@@ -36,7 +36,7 @@ class TickerDrawMetrics {
     private final Map<Character, Float> charWidths = new HashMap<>(256);
     private float charHeight, charBaseline;
 
-    private int preferredScrollingDirection = TickerView.DIRECTION_ANY;
+    private TickerView.ScrollingDirection preferredScrollingDirection = TickerView.ScrollingDirection.ANY;
 
     TickerDrawMetrics(Paint textPaint) {
         this.textPaint = textPaint;
@@ -74,11 +74,11 @@ class TickerDrawMetrics {
         return charBaseline;
     }
 
-    int getPreferredScrollingDirection() {
+    TickerView.ScrollingDirection getPreferredScrollingDirection() {
         return preferredScrollingDirection;
     }
 
-    void setPreferredScrollingDirection(int preferredScrollingDirection) {
+    void setPreferredScrollingDirection(TickerView.ScrollingDirection preferredScrollingDirection) {
         this.preferredScrollingDirection = preferredScrollingDirection;
     }
 }

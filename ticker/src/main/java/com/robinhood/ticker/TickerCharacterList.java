@@ -64,10 +64,10 @@ class TickerCharacterList {
     /**
      * @param start the character that we want to animate from
      * @param end the character that we want to animate to
-     * @param preferredDirection the preferred scrolling direction
+     * @param direction the preferred {@Link TickerView#ScrollingDirection}
      * @return a valid pair of start and end indices, or null if the inputs are not supported.
      */
-    CharacterIndices getCharacterIndices(char start, char end, int preferredDirection) {
+    CharacterIndices getCharacterIndices(char start, char end, TickerView.ScrollingDirection direction) {
         int startIndex = getIndexOfChar(start);
         int endIndex = getIndexOfChar(end);
 
@@ -75,8 +75,8 @@ class TickerCharacterList {
             return null;
         }
 
-        switch (preferredDirection) {
-            case TickerView.DIRECTION_DOWN:
+        switch (direction) {
+            case DOWN:
                 if (end == TickerUtils.EMPTY_CHAR) {
                     endIndex = characterList.length;
                 } else if (endIndex < startIndex) {
@@ -84,13 +84,13 @@ class TickerCharacterList {
                 }
 
                 break;
-            case TickerView.DIRECTION_UP:
+            case UP:
                 if (startIndex < endIndex) {
                     startIndex += numOriginalCharacters;
                 }
 
                 break;
-            case TickerView.DIRECTION_ANY:
+            case ANY:
                 // see if the wrap-around animation is shorter distance than the original animation
                 if (start != TickerUtils.EMPTY_CHAR && end != TickerUtils.EMPTY_CHAR) {
                     if (endIndex < startIndex) {
@@ -111,8 +111,6 @@ class TickerCharacterList {
                 }
 
                 break;
-            default:
-                throw new IllegalArgumentException("Unknown direction: " + preferredDirection);
         }
 
         return new CharacterIndices(startIndex, endIndex);

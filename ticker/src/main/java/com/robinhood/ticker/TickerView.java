@@ -57,16 +57,17 @@ import android.view.animation.Interpolator;
  * @author Jin Cao, Robinhood
  */
 public class TickerView extends View {
+
+    public enum ScrollingDirection {
+        ANY, UP, DOWN
+    }
+
     private static final int DEFAULT_TEXT_SIZE = 12;
     private static final int DEFAULT_TEXT_COLOR = Color.BLACK;
     private static final int DEFAULT_ANIMATION_DURATION = 350;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR =
             new AccelerateDecelerateInterpolator();
     private static final int DEFAULT_GRAVITY = Gravity.START;
-
-    public static final int DIRECTION_ANY = 0;
-    public static final int DIRECTION_UP = 1;
-    public static final int DIRECTION_DOWN = 2;
 
     protected final Paint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
@@ -184,9 +185,21 @@ public class TickerView extends View {
         }
 
         final int defaultPreferredScrollingDirection =
-                arr.getInt(R.styleable.TickerView_ticker_defaultPreferredScrollingDirection, DIRECTION_ANY);
+                arr.getInt(R.styleable.TickerView_ticker_defaultPreferredScrollingDirection, 0);
 
-        metrics.setPreferredScrollingDirection(defaultPreferredScrollingDirection);
+        switch (defaultPreferredScrollingDirection) {
+            case 0:
+                metrics.setPreferredScrollingDirection(ScrollingDirection.ANY);
+                break;
+            case 1:
+                metrics.setPreferredScrollingDirection(ScrollingDirection.UP);
+                break;
+            case 2:
+                metrics.setPreferredScrollingDirection(ScrollingDirection.DOWN);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported ticker_defaultPreferredScrollingDirection: " + defaultPreferredScrollingDirection);
+        }
 
         if (isCharacterListsSet()) {
             setText(styledAttributes.text, false);
@@ -466,15 +479,15 @@ public class TickerView extends View {
 
     /**
      * Sets the preferred scrolling direction for ticker animations.
-     * Eligible params include {@link #DIRECTION_ANY}, {@link #DIRECTION_UP}
-     * and {@link #DIRECTION_DOWN}.
+     * Eligible params include {@link ScrollingDirection#ANY}, {@link ScrollingDirection#UP}
+     * and {@link ScrollingDirection#DOWN}.
      *
-     * The default value is {@link #DIRECTION_ANY}.
+     * The default value is {@link ScrollingDirection#ANY}.
      *
-     * @param preferredScrollingDirection the preferred scrolling directional
+     * @param direction the preferred {@link ScrollingDirection}
      */
-    public void setPreferredScrollingDirection(int preferredScrollingDirection) {
-        this.metrics.setPreferredScrollingDirection(preferredScrollingDirection);
+    public void setPreferredScrollingDirection(ScrollingDirection direction) {
+        this.metrics.setPreferredScrollingDirection(direction);
     }
 
     /**
