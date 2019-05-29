@@ -22,6 +22,10 @@ public class MainActivity extends BaseActivity {
         ticker2 = findViewById(R.id.ticker2);
         ticker3 = findViewById(R.id.ticker3);
 
+        ticker1.setPreferredScrollingDirection(TickerView.ScrollingDirection.DOWN);
+        ticker2.setPreferredScrollingDirection(TickerView.ScrollingDirection.UP);
+        ticker3.setPreferredScrollingDirection(TickerView.ScrollingDirection.ANY);
+
         findViewById(R.id.perfBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
