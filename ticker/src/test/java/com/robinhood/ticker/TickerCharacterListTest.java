@@ -47,7 +47,23 @@ public class TickerCharacterListTest {
     }
 
     @Test
+    public void test_getCharacterIndicesForcedDown2() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('0', '2', TickerView.DIRECTION_DOWN);
+        assertEquals(1, indices.startIndex);
+        assertEquals(3, indices.endIndex);
+    }
+
+    @Test
     public void test_getCharacterIndicesForcedUp() {
+        final TickerCharacterList list = new TickerCharacterList("012");
+        final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('2', '0', TickerView.DIRECTION_UP);
+        assertEquals(3, indices.startIndex);
+        assertEquals(1, indices.endIndex);
+    }
+
+    @Test
+    public void test_getCharacterIndicesForcedUp2() {
         final TickerCharacterList list = new TickerCharacterList("012");
         final TickerCharacterList.CharacterIndices indices = list.getCharacterIndices('0', '2', TickerView.DIRECTION_UP);
         assertEquals(4, indices.startIndex);
