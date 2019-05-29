@@ -90,7 +90,7 @@ class TickerCharacterList {
                 }
 
                 break;
-            default:
+            case TickerView.DIRECTION_ANY:
                 // see if the wrap-around animation is shorter distance than the original animation
                 if (start != TickerUtils.EMPTY_CHAR && end != TickerUtils.EMPTY_CHAR) {
                     if (endIndex < startIndex) {
@@ -111,6 +111,8 @@ class TickerCharacterList {
                 }
 
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown direction: " + preferredDirection);
         }
 
         return new CharacterIndices(startIndex, endIndex);
