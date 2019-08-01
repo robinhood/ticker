@@ -1,3 +1,7 @@
+Version 2.0.2 *(2019-08-01)*
+----------------------------
+* Add support for preferred scrolling direction.
+
 Version 2.0.0 *(2018-04-20)*
 ----------------------------
 Please refer to the

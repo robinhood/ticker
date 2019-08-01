@@ -2,11 +2,12 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 
     resourcePrefix 'ticker_'
 
     defaultConfig {
+        //noinspection MinSdkTooLow
         minSdkVersion 12
         targetSdkVersion 28
     }
@@ -14,7 +15,7 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.21.0'
+    testImplementation 'org.mockito:mockito-core:2.24.0'
 }
 
 apply from: './gradle-mvn-push.gradle'
