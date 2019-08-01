@@ -2,6 +2,11 @@ Version 2.0.2 *(2019-08-01)*
 ----------------------------
 * Add support for preferred scrolling direction.
 
+Version 2.0.1 *(2018-12-05)*
+----------------------------
+* Support android:text even when character list is not set in XML
+* Support wraparound animation for going forwards as well as backwards
+
 Version 2.0.0 *(2018-04-20)*
 ----------------------------
 Please refer to the
