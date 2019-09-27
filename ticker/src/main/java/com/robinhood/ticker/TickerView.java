@@ -556,6 +556,17 @@ public class TickerView extends View {
         animator.removeListener(animatorListener);
     }
 
+    /**
+     * Configures the textpaint used for drawing individual ticker characters.
+     * See {@link Paint#setFlags(int)} for more information.
+     *
+     * @param flags the new flag bits for the paint
+     */
+    public void setPaintFlags(int flags) {
+        textPaint.setFlags(flags);
+        onTextPaintMeasurementChanged();
+    }
+
 
     /********** END PUBLIC API **********/
 
