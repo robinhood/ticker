@@ -23,6 +23,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -565,6 +566,22 @@ public class TickerView extends View {
     public void setPaintFlags(int flags) {
         textPaint.setFlags(flags);
         onTextPaintMeasurementChanged();
+    }
+
+    /**
+     * Exposing method to add or remove blur mask filter to ticker text.
+     *
+     * @param style Blur mask filter type
+     * @param radius Density of filter
+     */
+    public void setBlurMaskFilter(BlurMaskFilter.Blur style, float radius) {
+        if (style != null && radius > 0f) {
+            BlurMaskFilter filter = new BlurMaskFilter(radius, style);
+            textPaint.setMaskFilter(filter);
+        } else {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            textPaint.setMaskFilter(null);
+        }
     }
 
 
