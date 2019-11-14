@@ -326,6 +326,10 @@ public class TickerView extends View {
             return;
         }
 
+        if (animator.isRunning()) {
+            animator.cancel();
+        }
+
         this.text = text;
         final char[] targetText = text == null ? new char[0] : text.toCharArray();
 
@@ -334,10 +338,6 @@ public class TickerView extends View {
 
         if (animate) {
             // Kick off the animator that draws the transition
-            if (animator.isRunning()) {
-                animator.cancel();
-            }
-
             animator.setStartDelay(animationDelayInMillis);
             animator.setDuration(animationDurationInMillis);
             animator.setInterpolator(animationInterpolator);
