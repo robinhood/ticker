@@ -27,7 +27,7 @@ import android.graphics.Paint;
  * @author Jin Cao, Robinhood
  */
 class TickerColumn {
-    private final TickerCharacterList[] characterLists;
+    private TickerCharacterList[] characterLists;
     private final TickerDrawMetrics metrics;
 
     private char currentChar = TickerUtils.EMPTY_CHAR;
@@ -60,6 +60,13 @@ class TickerColumn {
     TickerColumn(TickerCharacterList[] characterLists, TickerDrawMetrics metrics) {
         this.characterLists = characterLists;
         this.metrics = metrics;
+    }
+
+    /**
+     * Updates the characterLists used in the column.
+     */
+    void setCharacterLists(TickerCharacterList[] characterLists) {
+        this.characterLists = characterLists;
     }
 
     /**
