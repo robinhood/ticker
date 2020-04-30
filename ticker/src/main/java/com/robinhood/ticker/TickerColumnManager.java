@@ -57,6 +57,11 @@ class TickerColumnManager {
         for (int i = 0; i < characterLists.length; i++) {
             this.supportedCharacters.addAll(this.characterLists[i].getSupportedCharacters());
         }
+
+        // Update character lists in current columns
+        for (TickerColumn tickerColumn : tickerColumns) {
+            tickerColumn.setCharacterLists(this.characterLists);
+        }
     }
 
     TickerCharacterList[] getCharacterLists() {
