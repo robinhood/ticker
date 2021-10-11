@@ -14,7 +14,7 @@
         android:text="$0.0"
         android:textAppearance="@style/TickerTextAppearance"
         android:textStyle="bold"
-        app:ticker_animationDuration="500"
+        app:ticker_animationDuration="250"
         app:ticker_defaultCharacterList="number" />
 
     <SeekBar
