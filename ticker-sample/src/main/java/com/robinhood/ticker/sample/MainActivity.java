@@ -32,6 +32,13 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, PerfActivity.class));
             }
         });
+
+        findViewById(R.id.slideBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SlideActivity.class));
+            }
+        });
     }
 
     @Override
