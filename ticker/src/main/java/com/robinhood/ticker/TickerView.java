@@ -74,7 +74,10 @@ public class TickerView extends View {
 
     private final TickerDrawMetrics metrics = new TickerDrawMetrics(textPaint);
     private final TickerColumnManager columnManager = new TickerColumnManager(metrics);
+
     private final ValueAnimator animator = ValueAnimator.ofFloat(1f);
+    private AnimationHolder currentAnimation;
+    private AnimationHolder nextAnimation;
 
     // Minor optimizations for re-positioning the canvas for the composer.
     private final Rect viewBounds = new Rect();
@@ -225,6 +228,7 @@ public class TickerView extends View {
                 columnManager.onAnimationEnd();
                 checkForRelayout();
                 invalidate();
+                startNextAnimation();
             }
         });
     }
@@ -326,23 +330,21 @@ public class TickerView extends View {
             return;
         }
 
-        if (animator.isRunning()) {
+        if (!animate && animator.isRunning()) {
             animator.cancel();
+            currentAnimation = nextAnimation = null;
         }
-
-        this.text = text;
-        final char[] targetText = text == null ? new char[0] : text.toCharArray();
-
-        columnManager.setText(targetText);
-        setContentDescription(text);
 
         if (animate) {
             // Kick off the animator that draws the transition
-            animator.setStartDelay(animationDelayInMillis);
-            animator.setDuration(animationDurationInMillis);
-            animator.setInterpolator(animationInterpolator);
-            animator.start();
+            nextAnimation = new AnimationHolder(
+                    text, animationDelayInMillis, animationDurationInMillis, animationInterpolator);
+            if (currentAnimation == null) {
+                startNextAnimation();
+            }
         } else {
+            setTextInternal(text);
+
             columnManager.setAnimationProgress(1f);
             columnManager.onAnimationEnd();
             checkForRelayout();
@@ -687,7 +689,44 @@ public class TickerView extends View {
             translationX = viewBounds.left + (availableWidth - currentWidth);
         }
 
-        canvas.translate(translationX ,translationY);
+        canvas.translate(translationX, translationY);
         canvas.clipRect(0f, 0f, currentWidth, currentHeight);
+    }
+
+    private void setTextInternal(String text) {
+        this.text = text;
+        final char[] targetText = text == null ? new char[0] : text.toCharArray();
+
+        columnManager.setText(targetText);
+        setContentDescription(text);
+    }
+
+    private void startNextAnimation() {
+        AnimationHolder holder = currentAnimation = nextAnimation;
+        nextAnimation = null;
+        if (holder == null) return;
+
+        setTextInternal(holder.text);
+        animator.setStartDelay(holder.animationDelayInMillis);
+        animator.setDuration(holder.animationDurationInMillis);
+        animator.setInterpolator(holder.animationInterpolator);
+        animator.start();
+    }
+
+    private static final class AnimationHolder {
+        public final String text;
+        public final long animationDelayInMillis;
+        public final long animationDurationInMillis;
+        public final Interpolator animationInterpolator;
+
+        private AnimationHolder(String text,
+                                long animationDelayInMillis,
+                                long animationDurationInMillis,
+                                Interpolator animationInterpolator) {
+            this.text = text;
+            this.animationDelayInMillis = animationDelayInMillis;
+            this.animationDurationInMillis = animationDurationInMillis;
+            this.animationInterpolator = animationInterpolator;
+        }
     }
 }
