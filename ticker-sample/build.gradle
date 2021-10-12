@@ -1,19 +1,24 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 31
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
         applicationId "com.robinhood.ticker.sample"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 31
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
     implementation project(':ticker')
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0-alpha01'
 }

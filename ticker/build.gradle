@@ -1,20 +1,20 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 31
+    buildToolsVersion '30.0.2'
 
     resourcePrefix 'ticker_'
 
     defaultConfig {
         //noinspection MinSdkTooLow
         minSdkVersion 12
-        targetSdkVersion 28
+        targetSdkVersion 31
     }
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:2.24.0'
 }
 

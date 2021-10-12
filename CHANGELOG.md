@@ -1,3 +1,9 @@
+Version 2.0.3 *(2021-10-12)*
+----------------------------
+* Change `textPaint` to be a public property
+* Update animation logic to skip animations during fast transitions
+* Other UX improvements
+
 Version 2.0.2 *(2019-08-01)*
 ----------------------------
 * Add support for preferred scrolling direction.
