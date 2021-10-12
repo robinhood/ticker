@@ -15,6 +15,7 @@
         </activity>
 
         <activity android:name=".PerfActivity" />
+        <activity android:name=".SlideActivity" />
     </application>
 
 </manifest>

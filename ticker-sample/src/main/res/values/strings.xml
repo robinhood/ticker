@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Ticker Example</string>
     <string name="perf_test">Perf test</string>
+    <string name="slide_test">Slide test</string>
 </resources>
