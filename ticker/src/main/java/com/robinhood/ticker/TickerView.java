@@ -70,7 +70,7 @@ public class TickerView extends View {
             new AccelerateDecelerateInterpolator();
     private static final int DEFAULT_GRAVITY = Gravity.START;
 
-    protected final Paint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    public final Paint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
     private final TickerDrawMetrics metrics = new TickerDrawMetrics(textPaint);
     private final TickerColumnManager columnManager = new TickerColumnManager(metrics);
