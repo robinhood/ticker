@@ -1,3 +1,7 @@
+Version 2.0.4 *(2021-11-11)*
+----------------------------
+* Fix bug introduced by the previous UX improvements
+
 Version 2.0.3 *(2021-10-12)*
 ----------------------------
 * Change `textPaint` to be a public property
