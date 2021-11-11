@@ -228,7 +228,13 @@ public class TickerView extends View {
                 columnManager.onAnimationEnd();
                 checkForRelayout();
                 invalidate();
-                startNextAnimation();
+
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startNextAnimation();
+                    }
+                });
             }
         });
     }
