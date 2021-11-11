@@ -222,6 +222,13 @@ public class TickerView extends View {
                 invalidate();
             }
         });
+
+        final Runnable startNextAnimation = new Runnable() {
+            @Override
+            public void run() {
+                startNextAnimation();
+            }
+        };
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -229,12 +236,11 @@ public class TickerView extends View {
                 checkForRelayout();
                 invalidate();
 
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        startNextAnimation();
-                    }
-                });
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startNextAnimation.run();
+                } else {
+                    post(startNextAnimation);
+                }
             }
         });
     }
