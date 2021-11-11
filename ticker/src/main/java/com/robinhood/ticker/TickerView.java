@@ -222,13 +222,25 @@ public class TickerView extends View {
                 invalidate();
             }
         });
+
+        final Runnable startNextAnimation = new Runnable() {
+            @Override
+            public void run() {
+                startNextAnimation();
+            }
+        };
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 columnManager.onAnimationEnd();
                 checkForRelayout();
                 invalidate();
-                startNextAnimation();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startNextAnimation.run();
+                } else {
+                    post(startNextAnimation);
+                }
             }
         });
     }
