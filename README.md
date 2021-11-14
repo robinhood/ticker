@@ -68,7 +68,7 @@ android:gravity="center"
 android:textColor="@color/colorPrimary"
 android:textSize="16sp"
 app:ticker_animationDuration="1500"
-app:ticker_preferredScrollingDirection="any"
+app:ticker_defaultPreferredScrollingDirection="any"
 ```
 
 Or Java:
